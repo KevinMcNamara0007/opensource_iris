@@ -1,0 +1,16 @@
+cryptography
+PyJWT
+python-dotenv
+requests>=2.20.0
+Werkzeug
+PyPDF2
+python-docx
+pandas
+python-pptx
+openai==0.28.1
+fastapi
+uvicorn
+starlette
+python-multipart
+docx
+jinja2

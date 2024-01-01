@@ -1,0 +1,141 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <title>IRIS Experiment</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $("#apiform").submit(function(e) {
+            e.preventDefault();
+        });
+        function callAPI(){
+            let notes = document.getElementById("notes")
+            let file = document.getElementById("file").files[0]
+            let instructions = document.getElementById("instructions").value
+            let formData = new FormData();
+            if(notes){
+                if(notes.value !== ""){
+                    formData.append('notes', notes.value)
+                }
+            }
+            if(file !== undefined){
+                formData.append('file', file)
+            }
+            formData.append('prompt', instructions)
+
+            responseHTML = document.getElementById("response")
+            loader()
+            $.ajax({
+                type: "POST",
+                url: "/Inference/freestyle/",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data){
+                    responseHTML.innerHTML = data
+                },
+                error: function(xhr, ajaxOptions, thrownError){
+                    responseHTML.innerHTML = "API Failed"
+                }
+            })
+        }
+
+        function loader(){
+            let responseHTML = document.getElementById("response")
+            responseHTML.innerHTML = '<span class="loader"></span>'
+        }
+
+        function loadNotes(){
+            let responseHTML = document.getElementById("response")
+            responseHTML.innerHTML = '<textarea id="notes"></textarea>'
+        }
+    </script>
+    <style>
+        .loader {
+            width: 64px;
+            height: 64px;
+            position: relative;
+            margin: auto;
+            background-image:
+                    linear-gradient(#FFF 16px, transparent 0) ,
+                    linear-gradient(#FF3D00 16px, transparent 0) ,
+                    linear-gradient(#FF3D00 16px, transparent 0) ,
+                    linear-gradient(#FFF 16px, transparent 0);
+            background-repeat: no-repeat;
+            background-size: 16px 16px;
+            background-position: left top , left bottom , right top , right bottom;
+            animation: rotate 1s linear infinite;
+        }
+        @keyframes rotate {
+            0% {
+                width: 64px;
+                height: 64px;
+                transform: rotate(0deg)
+            }
+            50% {
+                width: 30px;
+                height: 30px;
+                transform: rotate(180deg)
+            }
+            100% {
+                width: 64px;
+                height: 64px;
+                transform: rotate(360deg)
+            }
+        }
+        .resp{
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 60%;
+            font-weight: 400;
+            font-size: 18px;
+            font-family: 'Open Sans', sans-serif;
+            margin-left: 25%;
+            margin-right: 20%;
+            margin-top: 3%;
+            white-space: pre-line;
+            height: 300px;
+            text-align: left !important;
+            overflow-y: auto;
+        }
+        #notes{
+            height: 200px;
+        }
+    </style>
+</head>
+
+<body>
+<!-- Add your site or application content here -->
+<div class="mainContainer">
+    <div class="heroContainer">
+        <div class="heroContent">
+            Welcome To Your AI Assistant
+        </div>
+    </div>
+    <div class="bodyContainer">
+        <div class="inputContainer">
+            <div class="description">Please type your instructions below</div>
+            <form id="apiform" onsubmit="callAPI();return false">
+                <input id="instructions" type="text" value="" placeholder="Enter your instructions here..." onsubmit="callAPI()"/>
+                <button class="notes" type="button" title="add notes" onclick="loadNotes()">
+                    <img src="notes.svg"/>
+                </button>
+                <label class="custom-file-upload" title="attach file">
+                    <input id="file" type="file"/>
+                    <img class="clipsvg" src="clip.svg"/>
+                </label>
+                <button class="searchIcon" type="button" title="search" onclick="callAPI()">
+                    <img src="search.svg"/>
+                </button>
+            </form>
+        </div>
+        <div class="resp" id="response">
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

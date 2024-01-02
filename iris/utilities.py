@@ -29,7 +29,6 @@ def customized_response(prompt, temp=0.05, max_tokens=4000, freq_pen=0.0, presc_
         ]
     )
     content = response.choices[0].message.content
-    print(content)
     return content
 
 

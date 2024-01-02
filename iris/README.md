@@ -10,3 +10,7 @@
 #### Replace OPEN-AI API key with your API key in line 21 of utilities.py
 
 #### HTML Functional Web Page is http://127.0.0.1:8080/iris
+
+
+### Terminal Application
+#### `python terminal.py`

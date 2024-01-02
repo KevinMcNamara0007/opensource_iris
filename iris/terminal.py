@@ -3,7 +3,7 @@ from utilities import customized_response
 
 def term():
     user_input = input("Ask a question or press 1 to exit:\n")
-    while user_input != 1:
+    while user_input != '1':
         if user_input == '1':
             break
         else:

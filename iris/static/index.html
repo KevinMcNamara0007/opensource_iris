@@ -48,7 +48,51 @@
 
         function loadNotes(){
             let responseHTML = document.getElementById("response")
-            responseHTML.innerHTML = '<textarea id="notes"></textarea>'
+            responseHTML.innerHTML = '<label>Notes:</label><textarea id="notes"></textarea>'
+        }
+        function getImageText(){
+            let formData = new FormData();
+            formData.append('file', $('#image')[0].files[0]);
+            let OCRAPIKEY = "Replace this text with your OCR API Key"
+            $.ajax({
+                method: 'POST',
+                url: 'https://api.ocr.space/parse/image',
+                headers: {"apikey": OCRAPIKEY},
+                data: formData,
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                success: function(result) {
+                    console.log(result);
+                    let notes = document.getElementById("notes")
+                    console.log(result.ParsedResults[0].ParsedText)
+                    if(notes){
+                        if(notes.value !== ""){
+                            notes = document.getElementById("notes")
+                            notes.value = notes.value + "\nImageText:\n" + result.ParsedResults[0].ParsedText;
+                        }
+                        if(notes.value === ""){
+                            notes = document.getElementById("notes")
+                            notes.value = result.ParsedResults[0].ParsedText;
+                        }
+                    }
+                    else{
+                        loadNotes();
+                        notes = document.getElementById("notes")
+                        notes.value = result.ParsedResults[0].ParsedText;
+                    }
+                    alert("Img converted to text, check notes")
+                },
+                error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR.responseText);
+                }
+            });
+        }
+        function displayFileName(){
+            let file = document.getElementById("file").files[0]
+            console.log(file)
+            let fileName = document.getElementById("fileName")
+            fileName.innerText = "File: " + file.name
         }
     </script>
     <style>
@@ -103,6 +147,14 @@
         #notes{
             height: 200px;
         }
+        .fileName{
+            padding-top: 5px;
+            right: 105px;
+            position: relative;
+            font-size: 20px;
+            text-align: right;
+            font-weight: 500;
+        }
     </style>
 </head>
 
@@ -122,14 +174,19 @@
                 <button class="notes" type="button" title="add notes" onclick="loadNotes()">
                     <img src="notes.svg"/>
                 </button>
+                <label class="custom-file-upload" title="attach image">
+                    <input id="image" type="file" accept="image/png, image/gif, image/jpeg" onchange="getImageText()"/>
+                    <img class="clipsvg" src="image.svg"/>
+                </label>
                 <label class="custom-file-upload" title="attach file">
-                    <input id="file" type="file"/>
+                    <input id="file" type="file" onchange="displayFileName()"/>
                     <img class="clipsvg" src="clip.svg"/>
                 </label>
                 <button class="searchIcon" type="button" title="search" onclick="callAPI()">
                     <img src="search.svg"/>
                 </button>
             </form>
+            <div class="fileName" id="fileName"></div>
         </div>
         <div class="resp" id="response">
         </div>

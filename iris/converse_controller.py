@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Form, UploadFile, File, Query
 
-from services import freestyle_service
+from services import freestyle_service, transcribe_voice_service
 
 router = APIRouter(
     prefix="/Inference",
@@ -23,3 +23,15 @@ async def free_form(
         freq: float = Form(default=0.0, description="Frequence pnealty")
 ):
     return await freestyle_service(prompt, notes, file, temp, pres, freq)
+
+
+@router.post("/transcribeVoice", description="Transcribes voice")
+async def transcribe_voice(
+        file: UploadFile = File(default=None, description="voice file only"),
+):
+    print(file)
+    file_location = f"audio/{file.filename}"
+    with open(file_location, "wb+") as file_object:
+        file_object.write(file.file.read())
+        file_object.close()
+    return await transcribe_voice_service(file_location)

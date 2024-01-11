@@ -1,7 +1,7 @@
 import csv
 import os
 from http.client import HTTPException
-
+import tempfile
 import hashlib
 import PyPDF2
 import docx
@@ -18,7 +18,23 @@ accepted_files = {
     "ppt": "Powerpoint Presentations"
 }
 
-openai.api_key = "Replace with your OPEN AI API Key"
+openai.api_key = "Replace with your OpenAI API Key here"
+
+
+def voice_transcription(audio_file):
+    try:
+        audio = open(audio_file, "rb")
+        transcript = openai.Audio.transcribe(
+            model="whisper-1",
+            file=audio,
+            response_format="text",
+            language="en"
+        )
+        print(transcript)
+        return transcript
+    except Exception as exc:
+        print(exc)
+        return exc
 
 
 def customized_response(prompt, temp=0.05, max_tokens=4000, freq_pen=0.0, presc_pen=0.0, url="tbd"):

@@ -94,6 +94,15 @@
             let fileName = document.getElementById("fileName")
             fileName.innerText = "File: " + file.name
         }
+        window.onload=function(){
+            document.getElementById("showVoiceRecordingDiv").style.display = "none"
+        }
+        function showVoiceRecorder(){
+            document.getElementById("showVoiceRecordingDiv").style.display = "block"
+        }
+        function hideVoiceRecorder(){
+            document.getElementById("showVoiceRecordingDiv").style.display = "none"
+        }
     </script>
     <style>
         .loader {
@@ -155,6 +164,40 @@
             text-align: right;
             font-weight: 500;
         }
+        #showVoiceRecordingDiv{
+            width: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+        }
+        #showVoiceRecordingDiv{
+            padding-top: 20px;
+            justify-content: center;
+            align-items: center;
+            width: 60%;
+            margin-left: 40%;
+            button{
+                margin: auto;
+                padding: 10px;
+                font-weight: 400;
+                font-size: 18px;
+                font-family: 'Open Sans', sans-serif;
+                background: #1272d3;
+                color: white;
+                border: none;
+            }
+            button:hover{
+                background: #1c1c1c;
+            }
+            li{
+                padding-top: 3px;
+            }
+            a{
+
+            }
+        }
     </style>
 </head>
 
@@ -174,6 +217,9 @@
                 <button class="notes" type="button" title="add notes" onclick="loadNotes()">
                     <img src="notes.svg"/>
                 </button>
+                <button class="notes" type="button" title="add voice recording" onclick="showVoiceRecorder()">
+                    <img src="voice.svg"/>
+                </button>
                 <label class="custom-file-upload" title="attach image">
                     <input id="image" type="file" accept="image/png, image/gif, image/jpeg" onchange="getImageText()"/>
                     <img class="clipsvg" src="image.svg"/>
@@ -187,9 +233,22 @@
                 </button>
             </form>
             <div class="fileName" id="fileName"></div>
+            <div id="showVoiceRecordingDiv">
+                <div id="controls">
+                    <button id="recordButton">Record</button>
+                    <button id="pauseButton" disabled>Pause</button>
+                    <button id="stopButton" disabled>Stop</button>
+                    <button onclick="hideVoiceRecorder()">Hide Voice</button>
+                </div>
+                <div id="formats">Format: start recording to see sample rate</div>
+                <p><strong>Recordings:</strong></p>
+                <ol id="recordingsList"></ol>
+            </div>
         </div>
         <div class="resp" id="response">
         </div>
+        <script src="recorder.js"></script>
+        <script src="app.js"></script>
     </div>
 </div>
 

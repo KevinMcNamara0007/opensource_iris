@@ -145,11 +145,11 @@
             font-weight: 400;
             font-size: 18px;
             font-family: 'Open Sans', sans-serif;
-            margin-left: 25%;
+            margin-left: 20%;
             margin-right: 20%;
             margin-top: 3%;
             white-space: pre-line;
-            height: 300px;
+            height: 700px;
             text-align: left !important;
             overflow-y: auto;
         }
@@ -165,19 +165,13 @@
             font-weight: 500;
         }
         #showVoiceRecordingDiv{
-            width: 100%;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: auto;
-        }
-        #showVoiceRecordingDiv{
             padding-top: 20px;
             justify-content: center;
             align-items: center;
-            width: 60%;
-            margin-left: 40%;
+            width: 40%;
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
             button{
                 margin: auto;
                 padding: 10px;
@@ -191,12 +185,42 @@
             button:hover{
                 background: #1c1c1c;
             }
+            button:disabled{
+                background: none;
+                color: whitesmoke;
+            }
             li{
-                padding-top: 3px;
+                padding-top: 10px;
+                width: 550px;
+                display: grid;
+                flex-direction: column;
+                grid-template-columns: 1fr 1fr 1fr;
             }
             a{
-
+                margin: auto;
+                padding: 10px;
+                font-weight: 400;
+                font-size: 18px;
+                font-family: 'Open Sans', sans-serif;
+                background: #1272d3;
+                color: white;
+                border: none;
+                text-decoration: none;
             }
+            a:hover{
+                background: #1c1c1c;
+            }
+        }
+        textarea{
+            font-weight: 400;
+            font-size: 18px;
+            font-family: 'Open Sans', sans-serif;
+            padding-left: 10px;
+            height: 700px;
+            width: 100%;
+            border: 2px solid #1c1c1c;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
         }
     </style>
 </head>

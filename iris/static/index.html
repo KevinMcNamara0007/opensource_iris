@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
+        const OCRAPIKEY = "Replace this text with your OCR API Key"
+
+        let history = sessionStorage.getItem("history") ? JSON.parse(sessionStorage.getItem("history")) : [];
         $("#apiform").submit(function(e) {
             e.preventDefault();
         });
@@ -22,6 +25,8 @@
             if(file !== undefined){
                 formData.append('file', file)
             }
+            formData.append('history', JSON.stringify(history))
+            console.log(formData.get('history'))
             formData.append('prompt', instructions)
 
             responseHTML = document.getElementById("response")
@@ -34,6 +39,12 @@
                 contentType: false,
                 success: function(data){
                     responseHTML.innerHTML = data
+                    let userObject = {"role": "user", "content": instructions};
+                    let assistantObject = {"role": "assistant", "content": data};
+                    history.push(userObject);
+                    history.push(assistantObject);
+                    sessionStorage.setItem("history", JSON.stringify(history));
+                    console.log(history)
                 },
                 error: function(xhr, ajaxOptions, thrownError){
                     responseHTML.innerHTML = "API Failed"
@@ -53,7 +64,6 @@
         function getImageText(){
             let formData = new FormData();
             formData.append('file', $('#image')[0].files[0]);
-            let OCRAPIKEY = "Replace this text with your OCR API Key"
             $.ajax({
                 method: 'POST',
                 url: 'https://api.ocr.space/parse/image',
@@ -102,6 +112,11 @@
         }
         function hideVoiceRecorder(){
             document.getElementById("showVoiceRecordingDiv").style.display = "none"
+        }
+        function clearChatHistory(){
+            sessionStorage.removeItem("history")
+            history = []
+            alert("Chat History has been cleared.")
         }
     </script>
     <style>
@@ -222,6 +237,18 @@
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
         }
+        .clearButton{
+            float: left;
+            margin-right: 20px;
+            background: #1272d3 !important;
+            color: white !important;
+            border: none !important;
+            font-size: 12px;
+        }
+        .clearButton:hover{
+            background: #9499c2 !important;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -237,6 +264,7 @@
         <div class="inputContainer">
             <div class="description">Please type your instructions below</div>
             <form id="apiform" onsubmit="callAPI();return false">
+                <button type="button" class="clearButton" onclick="clearChatHistory()">Clear Chat History</button>
                 <input id="instructions" type="text" value="" placeholder="Enter your instructions here..." onsubmit="callAPI()"/>
                 <button class="notes" type="button" title="add notes" onclick="loadNotes()">
                     <img src="notes.svg"/>

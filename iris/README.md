@@ -11,7 +11,7 @@
 ###    
 
 #### Sign up for free OCRAPI for Image To Text Extraction: https://ocr.space/OCRAPI
-#### Replace static/index.html line 56 with your OCRAPI Key
+#### Replace static/index.html line 9 with your OCRAPI Key
 ### HTML Functional Web Page is http://127.0.0.1:8080/iris
 
 ###   

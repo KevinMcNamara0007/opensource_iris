@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Form, UploadFile, File, Query
-
+from typing import List
+from pydantic import BaseModel
+from fastapi import FastAPI
 from services import freestyle_service, transcribe_voice_service
 
 router = APIRouter(
@@ -16,13 +18,14 @@ router = APIRouter(
 @router.post("/freestyle", description="Instructions and files")
 async def free_form(
         prompt: str = Form(description="Instruction to follow or Question"),
+        history: str = Form(default="[]", description="Log History"),
         file: UploadFile = File(default=None, description="The file attached"),
         notes: str = Form(default=None, description="Any notes"),
         temp: float = Form(default=0.05, description="temp"),
-        pres: float = Form(default=0.00, description="Prescence Penalty"),
-        freq: float = Form(default=0.0, description="Frequence pnealty")
+        pres: float = Form(default=0.00, description="Presence Penalty"),
+        freq: float = Form(default=0.0, description="Frequency penalty")
 ):
-    return await freestyle_service(prompt, notes, file, temp, pres, freq)
+    return await freestyle_service(prompt, history, notes, file, temp, pres, freq)
 
 
 @router.post("/transcribeVoice", description="Transcribes voice")

@@ -2,7 +2,7 @@ import csv
 import os
 from http.client import HTTPException
 import tempfile
-import hashlib
+import json
 import PyPDF2
 import docx
 import openai
@@ -37,12 +37,13 @@ def voice_transcription(audio_file):
         return exc
 
 
-def customized_response(prompt, temp=0.05, max_tokens=4000, freq_pen=0.0, presc_pen=0.0, url="tbd"):
+def customized_response(prompt, history_log, temp=0.05, max_tokens=4000, freq_pen=0.0, presc_pen=0.0, url="tbd"):
+    history = json.loads(history_log)
+    new_prompt = {"role": "user", "content": prompt}
+    history.append(new_prompt)
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
+        messages=history
     )
     content = response.choices[0].message.content
     return content

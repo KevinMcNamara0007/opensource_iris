@@ -39,6 +39,7 @@
                 contentType: false,
                 success: function(data){
                     responseHTML.innerHTML = data
+                    getTextToAudio(data)
                     let userObject = {"role": "user", "content": instructions};
                     let assistantObject = {"role": "assistant", "content": data};
                     history.push(userObject);
@@ -118,6 +119,50 @@
             history = []
             alert("Chat History has been cleared.")
         }
+
+        let autoplay = true;
+        function getTextToAudio(text){
+            let formData = new FormData();
+            formData.append("text",text)
+            $.ajax({
+                type: "POST",
+                url: "/Inference/textToVoice/",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data){
+                    let audio = document.getElementById("textToAudio")
+                    if(autoplay === true){
+                        audio.innerHTML = '<audio controls autoplay>' +
+                            '  <source src="' + data + '" type="audio/mp3">' +
+                            'Your browser does not support the audio element.' +
+                            '</audio>'
+                    }else{
+                        audio.innerHTML = '<audio controls>' +
+                            '  <source src="' + data + '" type="audio/mp3">' +
+                            'Your browser does not support the audio element.' +
+                            '</audio>'
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError){
+                    responseHTML.innerHTML = "API Failed"
+                }
+            })
+        }
+
+        function setAutoPlay(){
+            let autoPlayBtn = document.getElementById("autoPlayButton");
+            if(autoplay === false){
+                autoplay = true;
+                autoPlayBtn.innerHTML = '<img title="Toggle Autoplay Response On/Off" class="autoPlayImg" src="soundOn.svg"/>'
+            }else{
+                autoplay = false;
+                autoPlayBtn.innerHTML = '<img title="Toggle Autoplay Response On/Off" class="autoPlayImg" src="soundOff.svg"/>'
+            }
+        }
+        function copyToClipboard(){
+
+        }
     </script>
     <style>
         .loader {
@@ -156,12 +201,12 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            width: 60%;
+            width: 79%;
             font-weight: 400;
             font-size: 18px;
             font-family: 'Open Sans', sans-serif;
-            margin-left: 20%;
-            margin-right: 20%;
+            margin-left: 10%;
+            margin-right: 10%;
             margin-top: 3%;
             white-space: pre-line;
             height: 700px;
@@ -249,6 +294,19 @@
             background: #9499c2 !important;
             cursor: pointer;
         }
+        .textAudio{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .autoPlayImg{
+            width: 30px;
+            height: 30px;
+        }
+        #autoPlayButton{
+            position: relative;
+            right: 20px !important;
+        }
     </style>
 </head>
 
@@ -295,6 +353,12 @@
                 <div id="formats">Format: start recording to see sample rate</div>
                 <p><strong>Recordings:</strong></p>
                 <ol id="recordingsList"></ol>
+            </div>
+        </div>
+        <div class="textAudio">
+            <div id="autoPlayButton" onclick="setAutoPlay()"><img title="Toggle Autoplay Response On/Off" class="autoPlayImg" src="soundOn.svg"/></div>
+            <div id="textToAudio">
+
             </div>
         </div>
         <div class="resp" id="response">

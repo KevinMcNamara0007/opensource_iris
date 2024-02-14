@@ -7,7 +7,7 @@ PyPDF2
 python-docx
 pandas
 python-pptx
-openai==0.28.1
+openai
 fastapi
 uvicorn
 starlette

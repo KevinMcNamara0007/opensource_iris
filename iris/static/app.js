@@ -120,63 +120,52 @@ function createDownloadLink(blob) {
 	var url = URL.createObjectURL(blob);
 	var au = document.createElement('audio');
 	var li = document.createElement('li');
-	var link = document.createElement('a');
-	//name of .wav file to use during upload and download (without extendion)
 	var filename = "audio" + Math.floor(Math.random() * 1000) + ".wav";
 
 	//add controls to the <audio> element
 	au.controls = true;
 	au.src = url;
 
-	//save to disk link
-	link.href = url;
-	link.download = filename+".wav"; //download forces the browser to donwload the file using the  filename
-	link.innerHTML = "Save to disk";
-
 	//add the new audio element to li
 	li.appendChild(au);
 
-	//add the save to disk link to li
-	li.appendChild(link);
-	
-	//upload link
-	var upload = document.createElement('a');
-	upload.href="#";
-	upload.innerHTML = "Transcribe";
-	upload.addEventListener("click", function(event){
-	  var xhr=new XMLHttpRequest();
-	  xhr.onload=function(e) {
-		  if(this.readyState === 4) {
-			  console.log(e.target.responseText)
-			  let notes = document.getElementById("notes")
-			  if(notes){
-				  if(notes.value !== ""){
-					  notes = document.getElementById("notes")
-					  notes.value = notes.value + "\nVoiceTranscribed:\n" + e.target.responseText;
-				  }
-				  if(notes.value === ""){
-					  notes = document.getElementById("notes")
-					  notes.value = e.target.responseText;
-				  }
-			  }
-			  else{
-				  loadNotes();
-				  notes = document.getElementById("notes")
-				  notes.value = e.target.responseText;
-			  }
-		  }
-	  };
-	  var fd=new FormData();
-	  let file = new File([blob], filename);
-
-	  console.log(file);
-	  fd.append("file",file);
-	  xhr.open("POST","/Inference/transcribeVoice",true);
-	  xhr.send(fd);
-	})
-	li.appendChild(document.createTextNode (" "))//add a space in between
-	li.appendChild(upload)//add the upload link to li
 
 	//add the li element to the ol
 	recordingsList.appendChild(li);
+
+	//Send straight to Translate then LLM
+
+	var xhr=new XMLHttpRequest();
+	xhr.onload=function(e) {
+		if(this.readyState === 4) {
+			let text = "";
+			text = e.target.responseText.replaceAll(/\\n/g," ");
+			text = text.replace(/"/g,'');
+			let search = document.getElementById("instructions")
+			if(search){
+				if(search.value !== ""){
+					search = document.getElementById("instructions")
+					search.value = text;
+					callAPI()
+				}
+				if(search.value === ""){
+					search = document.getElementById("instructions")
+					search.value = text;
+					callAPI()
+				}
+			}
+			else{
+				search = document.getElementById("instructions")
+				search.value = text;
+				callAPI()
+			}
+		}
+	};
+	var fd=new FormData();
+	let file = new File([blob], filename);
+
+	console.log("lets try this off rip");
+	fd.append("file",file);
+	xhr.open("POST","/Inference/transcribeVoice",true);
+	xhr.send(fd);
 }

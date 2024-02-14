@@ -1,11 +1,12 @@
 import csv
 import os
 from http.client import HTTPException
-import tempfile
+import random
 import json
 import PyPDF2
 import docx
-import openai
+import fastapi
+from openai import OpenAI
 import pandas as pd
 from pptx import Presentation
 
@@ -17,31 +18,46 @@ accepted_files = {
     "xls": "Excel Workbooks",
     "ppt": "Powerpoint Presentations"
 }
-
-openai.api_key = "Replace with your OpenAI API Key here"
+api_key = "Replace with your OpenAI API Key here"
+client = OpenAI(api_key=api_key)
 
 
 def voice_transcription(audio_file):
     try:
         audio = open(audio_file, "rb")
-        transcript = openai.Audio.transcribe(
+        transcript = client.audio.transcriptions.create(
             model="whisper-1",
             file=audio,
             response_format="text",
             language="en"
         )
-        print(transcript)
         return transcript
     except Exception as exc:
         print(exc)
         return exc
 
 
+def text_to_speech(text):
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice="alloy",
+        input=text,
+    )
+    print(response)
+    random_number = random.randrange(1, 10000, 3)
+    response.stream_to_file(f"static/audio/{random_number}.mp3")
+    return f"audio/{random_number}.mp3"
+
+
+def get_audio_file(filename):
+    return fastapi.responses.FileResponse(f"static/audio/{filename}.mp3")
+
+
 def customized_response(prompt, history_log, temp=0.05, max_tokens=4000, freq_pen=0.0, presc_pen=0.0, url="tbd"):
     history = json.loads(history_log)
     new_prompt = {"role": "user", "content": prompt}
     history.append(new_prompt)
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=history
     )

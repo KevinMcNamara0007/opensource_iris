@@ -1,8 +1,7 @@
-from fastapi import APIRouter, Form, UploadFile, File, Query
-from typing import List
-from pydantic import BaseModel
-from fastapi import FastAPI
-from services import freestyle_service, transcribe_voice_service
+from fastapi import APIRouter, Form, UploadFile, File
+
+
+from services import freestyle_service, transcribe_voice_service, text_to_voice_service, get_audio_file_service
 
 router = APIRouter(
     prefix="/Inference",
@@ -38,3 +37,17 @@ async def transcribe_voice(
         file_object.write(file.file.read())
         file_object.close()
     return await transcribe_voice_service(file_location)
+
+
+@router.post("/textToVoice", description="Text to Voice")
+def text_to_voice(
+        text: str = Form(description="Text to turn to voice"),
+):
+    return text_to_voice_service(text)
+
+
+@router.post("/getAudioFile", description="gets voice file of returned response")
+async def get_audio_file(
+        file_name: str = Form(description="number of voice file"),
+):
+    return await get_audio_file_service(file_name)

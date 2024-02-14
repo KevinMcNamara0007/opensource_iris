@@ -1,4 +1,4 @@
-from utilities import file_checker, customized_response, voice_transcription
+from utilities import file_checker, customized_response, voice_transcription, text_to_speech, get_audio_file
 
 
 async def freestyle_service(prompt, history, notes, file, temp, pres, freq):
@@ -9,7 +9,7 @@ async def freestyle_service(prompt, history, notes, file, temp, pres, freq):
     prompt = f"INSTRUCTIONS: {prompt}.\n" \
              f"NOTES: {notes}.\n" \
              f"FILE: {file_content}.\n" \
-             f"OUTPUT (use HTML tags like bold, italics, lists, sections, etc.): "
+             f"OUTPUT (Keep the result as straightforward and as minimal as possible): "
     return customized_response(prompt, history, temp=temp, presc_pen=pres, freq_pen=freq)
 
 
@@ -18,3 +18,11 @@ async def transcribe_voice_service(file):
         return voice_transcription(file)
     except Exception as exc:
         return f"failed to transcribe voice error: {exc}"
+
+
+def text_to_voice_service(text):
+    return text_to_speech(text)
+
+
+async def get_audio_file_service(filename):
+    return get_audio_file(filename)

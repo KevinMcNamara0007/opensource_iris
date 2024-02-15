@@ -58,7 +58,7 @@ def customized_response(prompt, history_log, temp=0.05, max_tokens=4000, freq_pe
     new_prompt = {"role": "user", "content": prompt}
     history.append(new_prompt)
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4-0125-preview",
         messages=history
     )
     content = response.choices[0].message.content

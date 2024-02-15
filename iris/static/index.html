@@ -30,7 +30,13 @@
             formData.append('prompt', instructions)
 
             responseHTML = document.getElementById("response")
+            let newDiv = document.createElement('div')
+            newDiv.className = "responseDiv"
             loader()
+            document.getElementById("textAudioContainer").style.display = "none";
+            responseHTML.style.display = "none";
+            //remove notes
+            document.getElementById("notesContainer").style.display = "none"
             $.ajax({
                 type: "POST",
                 url: "/Inference/freestyle/",
@@ -38,29 +44,46 @@
                 processData: false,
                 contentType: false,
                 success: function(data){
-                    responseHTML.innerHTML = data
-                    getTextToAudio(data)
+                    //Remove Loader
+                    document.getElementById("loaderContainer").style.display = "none"
+                    document.getElementById("loaderContainer").innerHTML = "";
+
+                    //show Response
+                    responseHTML.style.display = "flex";
+
+                    //Get Audio For Response
+                    getTextToAudio(data);
+
+                    let assistantResponse = data.replaceAll(/\\n/g," ")
+                    //Save response history
                     let userObject = {"role": "user", "content": instructions};
-                    let assistantObject = {"role": "assistant", "content": data};
+                    let assistantObject = {"role": "assistant", "content": assistantResponse};
                     history.push(userObject);
                     history.push(assistantObject);
                     sessionStorage.setItem("history", JSON.stringify(history));
-                    console.log(history)
+
+                    //Display Response
+                    newDiv.innerHTML = '<div><button class="copyText" onclick="copyToClipboard('+ history.indexOf(assistantObject) +')"><img src="copy.svg" title="Copy To Clipboard" class="autoPlayImg"/></button></div>' +
+                        '<div>' + data + '</div>';
+                    responseHTML.insertBefore(newDiv, responseHTML.firstChild);
                 },
                 error: function(xhr, ajaxOptions, thrownError){
-                    responseHTML.innerHTML = "API Failed"
+                    document.getElementById("loaderContainer").style.display = "none"
+                    alert("OpenAI Failed to load response, try again")
                 }
             })
         }
 
         function loader(){
-            let responseHTML = document.getElementById("response")
-            responseHTML.innerHTML = '<span class="loader"></span>'
+            let loaderDiv = document.getElementById("loaderContainer")
+            loaderDiv.style.display = "flex"
+            loaderDiv.innerHTML = '<span class="loader"></span>'
         }
 
         function loadNotes(){
-            let responseHTML = document.getElementById("response")
-            responseHTML.innerHTML = '<label>Notes:</label><textarea id="notes"></textarea>'
+            let notesHTML = document.getElementById("notesContainer")
+            notesHTML.style.display = "block"
+            notesHTML.innerHTML = '<div><label>Notes:</label><textarea id="notes"></textarea></div>'
         }
         function getImageText(){
             let formData = new FormData();
@@ -106,7 +129,9 @@
             fileName.innerText = "File: " + file.name
         }
         window.onload=function(){
+            document.getElementById("textAudioContainer").style.display = "none";
             document.getElementById("showVoiceRecordingDiv").style.display = "none"
+            document.getElementById("loaderContainer").style.display = "none"
         }
         function showVoiceRecorder(){
             document.getElementById("showVoiceRecordingDiv").style.display = "block"
@@ -115,8 +140,11 @@
             document.getElementById("showVoiceRecordingDiv").style.display = "none"
         }
         function clearChatHistory(){
-            sessionStorage.removeItem("history")
-            history = []
+            sessionStorage.removeItem("history");
+            history = [];
+            document.getElementById("textAudioContainer").style.display = "none";
+            document.getElementById("response").innerHTML = "";
+            document.getElementById("textToAudio").innerHTML = "";
             alert("Chat History has been cleared.")
         }
 
@@ -133,6 +161,7 @@
                 success: function(data){
                     let audio = document.getElementById("textToAudio")
                     if(autoplay === true){
+                        document.getElementById("textAudioContainer").style.display = "flex";
                         audio.innerHTML = '<audio controls autoplay>' +
                             '  <source src="' + data + '" type="audio/mp3">' +
                             'Your browser does not support the audio element.' +
@@ -145,7 +174,7 @@
                     }
                 },
                 error: function(xhr, ajaxOptions, thrownError){
-                    responseHTML.innerHTML = "API Failed"
+                    alert("Could not get audio for this response due to length")
                 }
             })
         }
@@ -160,11 +189,19 @@
                 autoPlayBtn.innerHTML = '<img title="Toggle Autoplay Response On/Off" class="autoPlayImg" src="soundOff.svg"/>'
             }
         }
-        function copyToClipboard(){
-
+        function copyToClipboard(index){
+            // Copies the text to clipboard
+            navigator.clipboard.writeText(history[index].content);
         }
     </script>
     <style>
+        .loaderDiv{
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 150px;
+        }
         .loader {
             width: 64px;
             height: 64px;
@@ -209,9 +246,31 @@
             margin-right: 10%;
             margin-top: 3%;
             white-space: pre-line;
-            height: 700px;
             text-align: left !important;
-            overflow-y: auto;
+        }
+        .responseDiv{
+            font-weight: 400;
+            font-size: 18px;
+            font-family: 'Open Sans', sans-serif;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.01);
+            border: 1px solid black;
+
+            button{
+                margin-bottom: 5px;
+                border: none;
+                background: none;
+                position: relative;
+                float: right;
+            }
+            button:hover{
+                transform: scale(110%);
+            }
+        }
+        #notesContainer{
+            width: 80%;
+            margin-left: 10%;
         }
         #notes{
             height: 200px;
@@ -355,12 +414,14 @@
                 <ol id="recordingsList"></ol>
             </div>
         </div>
-        <div class="textAudio">
+        <div id="notesContainer"></div>
+        <div id="textAudioContainer" class="textAudio">
             <div id="autoPlayButton" onclick="setAutoPlay()"><img title="Toggle Autoplay Response On/Off" class="autoPlayImg" src="soundOn.svg"/></div>
             <div id="textToAudio">
 
             </div>
         </div>
+        <div id="loaderContainer" class="loaderDiv"></div>
         <div class="resp" id="response">
         </div>
         <script src="recorder.js"></script>

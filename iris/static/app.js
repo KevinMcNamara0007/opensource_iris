@@ -11,30 +11,29 @@ var audioContext //audio context to help us record
 
 var recordButton = document.getElementById("recordButton");
 var stopButton = document.getElementById("stopButton");
-var pauseButton = document.getElementById("pauseButton");
 
 //add events to those 2 buttons
 recordButton.addEventListener("click", startRecording);
 stopButton.addEventListener("click", stopRecording);
-pauseButton.addEventListener("click", pauseRecording);
 
 function startRecording() {
+	recordButton.style.display = "none"
+	stopButton.style.display = "block"
 	console.log("recordButton clicked");
 
 	/*
 		Simple constraints object, for more advanced audio features see
 		https://addpipe.com/blog/audio-constraints-getusermedia/
 	*/
-    
+
     var constraints = { audio: true, video:false }
 
  	/*
-    	Disable the record button until we get a success or fail from getUserMedia() 
+    	Disable the record button until we get a success or fail from getUserMedia()
 	*/
 
 	recordButton.disabled = true;
 	stopButton.disabled = false;
-	pauseButton.disabled = false
 
 	/*
     	We're using the standard promise based getUserMedia() 
@@ -52,12 +51,10 @@ function startRecording() {
 		*/
 		audioContext = new AudioContext();
 
-		//update the format 
-		document.getElementById("formats").innerHTML="Format: 1 channel pcm @ "+audioContext.sampleRate/1000+"kHz"
 
 		/*  assign to gumStream for later use  */
 		gumStream = stream;
-		
+
 		/* use the stream */
 		input = audioContext.createMediaStreamSource(stream);
 
@@ -76,34 +73,20 @@ function startRecording() {
 	  	//enable the record button if getUserMedia() fails
     	recordButton.disabled = false;
     	stopButton.disabled = true;
-    	pauseButton.disabled = true
 	});
 }
 
-function pauseRecording(){
-	console.log("pauseButton clicked rec.recording=",rec.recording );
-	if (rec.recording){
-		//pause
-		rec.stop();
-		pauseButton.innerHTML="Resume";
-	}else{
-		//resume
-		rec.record()
-		pauseButton.innerHTML="Pause";
 
-	}
-}
 
 function stopRecording() {
+	recordButton.style.display = "block"
+	stopButton.style.display = "none"
 	console.log("stopButton clicked");
 
 	//disable the stop button, enable the record too allow for new recordings
 	stopButton.disabled = true;
 	recordButton.disabled = false;
-	pauseButton.disabled = true;
 
-	//reset button just in case the recording is stopped while paused
-	pauseButton.innerHTML="Pause";
 	
 	//tell the recorder to stop the recording
 	rec.stop();
@@ -163,8 +146,6 @@ function createDownloadLink(blob) {
 	};
 	var fd=new FormData();
 	let file = new File([blob], filename);
-
-	console.log("lets try this off rip");
 	fd.append("file",file);
 	xhr.open("POST","/Inference/transcribeVoice",true);
 	xhr.send(fd);

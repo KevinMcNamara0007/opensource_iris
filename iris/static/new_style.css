@@ -1,0 +1,239 @@
+:root {
+  --searchbar-border-color: #d9d9d9;
+}
+body {
+  color: #4b4b4b;
+  font-family: "Open Sans", sans-serif;
+}
+/* General */
+div.contentWrapper {
+  width: 80%;
+  margin: 0 auto;
+}
+
+/* search bar */
+div.inputContainer {
+  background-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+form input#instructions {
+  border: 1px solid var(--searchbar-border-color);
+  border-right: none;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  width: 100%;
+}
+form button.notes,
+.inputContainer form label.custom-file-upload {
+  border-top: 1px solid var(--searchbar-border-color) !important;
+  border-bottom: 1px solid var(--searchbar-border-color) !important;
+}
+.inputContainer form button.searchIcon {
+  border: 1px solid var(--searchbar-border-color) !important;
+  border-left: none !important;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.inputContainer form .iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.inputContainer form .iconBtn:hover {
+  background-color: #1767c9;
+}
+.inputContainer form .iconBtn svg {
+  width: 25px;
+  height: 25px;
+}
+#recordButton svg path,
+#fileButton svg path,
+#fileButton svg line,
+#notesButton svg path {
+  stroke: #0e4383;
+}
+#searchButton svg path,
+#imageButton svg path {
+  fill: #0e4383;
+}
+
+#recordButton:hover svg path,
+#fileButton:hover svg path,
+#fileButton:hover svg line,
+#notesButton:hover svg path {
+  stroke: #fff;
+}
+#searchButton:hover svg path,
+#imageButton:hover svg path {
+  fill: #fff;
+}
+
+/* Voice Recording component */
+
+button#stopButton {
+  animation: none !important;
+}
+button#stopButton:hover {
+  background-color: transparent;
+}
+button#stopButton svg {
+  width: 25px;
+  height: 25px;
+}
+button#stopButton svg circle {
+  fill: red;
+}
+button#stopButton .recordIconWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 25px;
+  animation: ease pulse2 2s infinite;
+}
+
+@keyframes pulse2 {
+  0% {
+    background-color: rgba(255, 0, 0, 0);
+  }
+  50% {
+    background-color: #eba3a3d0;
+  }
+  100% {
+    background-color: rgba(255, 0, 0, 0);
+  }
+}
+
+/* Notes section */
+div#notesContainer {
+  margin: 0 auto;
+}
+div#notesContainer label {
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 5px;
+  display: block;
+}
+textarea#notes {
+  border-color: var(--searchbar-border-color);
+  border-width: 1px;
+
+  color: #4b4b4b;
+}
+/* Response section */
+div.responseDiv {
+  border-color: var(--searchbar-border-color);
+  border-radius: 5px;
+}
+button.clearButton {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  margin-right: 0;
+  background: transparent !important;
+  color: #4b4b4b !important;
+}
+button.clearButton:hover {
+  text-decoration: underline;
+  background: transparent !important;
+}
+#copyButton svg path {
+  fill: #676767;
+}
+#autoPlayButton svg path {
+  stroke: #676767;
+}
+/* text audio*/
+.textAudio {
+  margin-bottom: 10px !important;
+  margin-top: 10px !important;
+  position: relative;
+}
+
+#soundWaveContainer {
+  position: absolute;
+  display: none;
+}
+.soundWave {
+  width: fit-content;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+.soundBar {
+  width: 3px;
+  background: #ff3a00;
+  height: 18px;
+  border-radius: 999px;
+
+  animation-name: wave1;
+  animation-duration: 0.3s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  transition: ease 0.2s;
+}
+.soundBar:nth-child(2) {
+  animation-name: wave2;
+  animation-delay: 0.2s;
+}
+.soundBar:nth-child(3) {
+  animation-name: wave3;
+  animation-delay: 0.23s;
+  animation-duration: 0.4s;
+}
+.soundBar:nth-child(4) {
+  animation-name: wave4;
+  animation-delay: 0.1s;
+  animation-duration: 0.3s;
+}
+.soundBar:nth-child(5) {
+  animation-delay: 0.5s;
+  animation-duration: 0.3s;
+}
+.soundBar:nth-child(6) {
+  animation-name: wave2;
+  animation-duration: 0.5s;
+}
+.soundBar:nth-child(8) {
+  animation-name: wave4;
+  animation-delay: 0.4s;
+  animation-duration: 0.25s;
+}
+.soundBar:nth-child(9) {
+  animation-name: wave3;
+  animation-delay: 0.15s;
+}
+@keyframes wave1 {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0.5);
+  }
+}
+@keyframes wave2 {
+  from {
+    transform: scaleY(0.3);
+  }
+  to {
+    transform: scaleY(0.6);
+  }
+}
+@keyframes wave3 {
+  from {
+    transform: scaleY(0.6);
+  }
+  to {
+    transform: scaleY(0.8);
+  }
+}
+@keyframes wave1 {
+  from {
+    transform: scaleY();
+  }
+  to {
+    transform: scaleY(0.5);
+  }
+}

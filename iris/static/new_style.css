@@ -237,3 +237,8 @@ button.clearButton:hover {
     transform: scaleY(0.5);
   }
 }
+
+#showVoiceRecordingDiv {
+  opacity: 0 !important;
+  height: 0 !important;
+}

@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Form, UploadFile, File
 
 
-from services import freestyle_service, transcribe_voice_service, text_to_voice_service, get_audio_file_service
+from services import freestyle_service, transcribe_voice_service, text_to_voice_service, get_audio_file_service, \
+    image_generation_service
 
 router = APIRouter(
     prefix="/Inference",
@@ -51,3 +52,10 @@ async def get_audio_file(
         file_name: str = Form(description="number of voice file"),
 ):
     return await get_audio_file_service(file_name)
+
+
+@router.post("/imageGeneration", description="Text to Voice")
+def text_to_image(
+        prompt: str = Form(description="Text to turn to image"),
+):
+    return image_generation_service(prompt)

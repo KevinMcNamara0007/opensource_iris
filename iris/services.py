@@ -1,4 +1,5 @@
-from utilities import file_checker, customized_response, voice_transcription, text_to_speech, get_audio_file
+from utilities import file_checker, customized_response, voice_transcription, text_to_speech, get_audio_file, \
+    image_generation
 
 
 async def freestyle_service(prompt, history, notes, file, temp, pres, freq):
@@ -22,6 +23,10 @@ async def transcribe_voice_service(file):
 
 def text_to_voice_service(text):
     return text_to_speech(text)
+
+
+def image_generation_service(prompt):
+    return image_generation(prompt)
 
 
 async def get_audio_file_service(filename):

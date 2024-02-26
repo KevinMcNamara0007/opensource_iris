@@ -17,6 +17,7 @@ recordButton.addEventListener("click", startRecording);
 stopButton.addEventListener("click", stopRecording);
 
 function startRecording() {
+	document.getElementById("textToAudio").innerHTML = "";
 	recordButton.style.display = "none"
 	stopButton.style.display = "block"
 	console.log("recordButton clicked");

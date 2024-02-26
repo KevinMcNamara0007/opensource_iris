@@ -40,6 +40,18 @@
         document.getElementById("soundWaveContainer").style.display = "none";
         //remove notes
         document.getElementById("notesContainer").style.display = "none";
+
+        //Disable All Form Elements To Wait for Voice Response
+        $('#apiform').prop('disabled', true);
+        $('#instructions').prop('disabled', true);
+        $('#notesButton').prop('disabled', true);
+        $('#recordButton').prop('disabled', true);
+        $('#image').prop('disabled', true);
+        $('#file').prop('disabled', true);
+        $('#searchButton').prop('disabled', true);
+        $('#imageButton').prop('disabled', true);
+        $('#fileButton').prop('disabled', true);
+
         $.ajax({
           type: "POST",
           url: "/Inference/freestyle/",
@@ -181,6 +193,17 @@
           processData: false,
           contentType: false,
           success: function (data) {
+            //Enable All Form Elements
+            $('#apiform').prop('disabled', false);
+            $('#instructions').prop('disabled', false);
+            $('#notesButton').prop('disabled', false);
+            $('#recordButton').prop('disabled', false);
+            $('#image').prop('disabled', false);
+            $('#file').prop('disabled', false);
+            $('#searchButton').prop('disabled', false);
+            $('#imageButton').prop('disabled', false);
+            $('#fileButton').prop('disabled', false);
+
             let audio = document.getElementById("textToAudio");
             if (autoplay === true) {
               document.getElementById("textAudioContainer").style.display =
@@ -203,6 +226,16 @@
             }
           },
           error: function (xhr, ajaxOptions, thrownError) {
+            //Enable All Form Elements
+            $('#apiform').prop('disabled', false);
+            $('#instructions').prop('disabled', false);
+            $('#notesButton').prop('disabled', false);
+            $('#recordButton').prop('disabled', false);
+            $('#image').prop('disabled', false);
+            $('#file').prop('disabled', false);
+            $('#searchButton').prop('disabled', false);
+            $('#imageButton').prop('disabled', false);
+            $('#fileButton').prop('disabled', false);
             alert("Could not get audio for this response due to length");
           },
         });
@@ -239,6 +272,30 @@
       }
     </script>
     <style>
+      #notesButton:disabled {
+        background: #EFEFEF4D !important;
+      }
+      #recordButton:disabled {
+        background: #EFEFEF4D !important;
+      }
+      #image:disabled {
+        background: #EFEFEF4D !important;
+      }
+      #file:disabled {
+        background: #EFEFEF4D !important;
+      }
+      /* Not working :C */
+      #searchButton:disabled {
+        fill: #EFEFEF4D !important;
+        background: #EFEFEF4D !important;
+        background-color: #EFEFEF4D !important;
+      }
+      #imageButton:disabled {
+        fill: #EFEFEF4D !important;
+        background: #EFEFEF4D !important;
+        background-color: #EFEFEF4D !important;
+      }
+
       .loaderDiv {
         position: relative;
         display: flex;

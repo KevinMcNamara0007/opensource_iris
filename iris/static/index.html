@@ -48,9 +48,9 @@
         $('#recordButton').prop('disabled', true);
         $('#image').prop('disabled', true);
         $('#file').prop('disabled', true);
-        $('#searchButton').prop('disabled', true);
-        $('#imageButton').prop('disabled', true);
-        $('#fileButton').prop('disabled', true);
+        $('#searchButton').addClass('disabled');
+        $('#imageButton').addClass('disabled');
+        $('#fileButton').addClass('disabled');
 
         $.ajax({
           type: "POST",
@@ -200,9 +200,9 @@
             $('#recordButton').prop('disabled', false);
             $('#image').prop('disabled', false);
             $('#file').prop('disabled', false);
-            $('#searchButton').prop('disabled', false);
-            $('#imageButton').prop('disabled', false);
-            $('#fileButton').prop('disabled', false);
+            $('#searchButton').removeClass('disabled');
+            $('#imageButton').removeClass('disabled');
+            $('#fileButton').removeClass('disabled');
 
             let audio = document.getElementById("textToAudio");
             if (autoplay === true) {
@@ -233,9 +233,9 @@
             $('#recordButton').prop('disabled', false);
             $('#image').prop('disabled', false);
             $('#file').prop('disabled', false);
-            $('#searchButton').prop('disabled', false);
-            $('#imageButton').prop('disabled', false);
-            $('#fileButton').prop('disabled', false);
+            $('#searchButton').removeClass('disabled');
+            $('#imageButton').removeClass('disabled');
+            $('#fileButton').removeClass('disabled');
             alert("Could not get audio for this response due to length");
           },
         });
@@ -285,12 +285,17 @@
         background: #EFEFEF4D !important;
       }
       /* Not working :C */
-      #searchButton:disabled {
+      #searchButton.disabled {
         fill: #EFEFEF4D !important;
         background: #EFEFEF4D !important;
         background-color: #EFEFEF4D !important;
       }
-      #imageButton:disabled {
+      #imageButton.disabled {
+        fill: #EFEFEF4D !important;
+        background: #EFEFEF4D !important;
+        background-color: #EFEFEF4D !important;
+      }
+      #fileButton.disabled {
         fill: #EFEFEF4D !important;
         background: #EFEFEF4D !important;
         background-color: #EFEFEF4D !important;

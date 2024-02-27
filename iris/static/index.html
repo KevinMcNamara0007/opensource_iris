@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="no-js" lang="">
   <head>
-    <title>IRIS Experiment</title>
+    <title>AI Assistant</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="new_style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -112,20 +112,24 @@
           document.getElementById("textAudioContainer").style.display =
                   "flex";
           history.forEach((item)=> {
-            let newDiv = document.createElement("div");
-            newDiv.className = "responseDiv";
-            newDiv.innerHTML =
-                    '<div><button id="copyButton" class="copyText iconBtn" onclick="copyToClipboard(' +
-                    history.indexOf(item) +
-                    `)">
+            if(item.role.includes("user")){
+              addUserInputText(item.content)
+            }else{
+              let newDiv = document.createElement("div");
+              newDiv.className = "responseDiv";
+              newDiv.innerHTML =
+                      '<div><button id="copyButton" class="copyText iconBtn" onclick="copyToClipboard(' +
+                      history.indexOf(item) +
+                      `)">
                     <svg class="autoPlayImg" width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M19.53 8L14 2.47C13.8595 2.32931 13.6688 2.25018 13.47 2.25H11C10.2707 2.25 9.57118 2.53973 9.05546 3.05546C8.53973 3.57118 8.25 4.27065 8.25 5V6.25H7C6.27065 6.25 5.57118 6.53973 5.05546 7.05546C4.53973 7.57118 4.25 8.27065 4.25 9V19C4.25 19.7293 4.53973 20.4288 5.05546 20.9445C5.57118 21.4603 6.27065 21.75 7 21.75H14C14.7293 21.75 15.4288 21.4603 15.9445 20.9445C16.4603 20.4288 16.75 19.7293 16.75 19V17.75H17C17.7293 17.75 18.4288 17.4603 18.9445 16.9445C19.4603 16.4288 19.75 15.7293 19.75 15V8.5C19.7421 8.3116 19.6636 8.13309 19.53 8ZM14.25 4.81L17.19 7.75H14.25V4.81ZM15.25 19C15.25 19.3315 15.1183 19.6495 14.8839 19.8839C14.6495 20.1183 14.3315 20.25 14 20.25H7C6.66848 20.25 6.35054 20.1183 6.11612 19.8839C5.8817 19.6495 5.75 19.3315 5.75 19V9C5.75 8.66848 5.8817 8.35054 6.11612 8.11612C6.35054 7.8817 6.66848 7.75 7 7.75H8.25V15C8.25 15.7293 8.53973 16.4288 9.05546 16.9445C9.57118 17.4603 10.2707 17.75 11 17.75H15.25V19ZM17 16.25H11C10.6685 16.25 10.3505 16.1183 10.1161 15.8839C9.8817 15.6495 9.75 15.3315 9.75 15V5C9.75 4.66848 9.8817 4.35054 10.1161 4.11612C10.3505 3.8817 10.6685 3.75 11 3.75H12.75V8.5C12.7526 8.69811 12.8324 8.88737 12.9725 9.02747C13.1126 9.16756 13.3019 9.24741 13.5 9.25H18.25V15C18.25 15.3315 18.1183 15.6495 17.8839 15.8839C17.6495 16.1183 17.3315 16.25 17 16.25Z" fill="#000000"/>
                     </svg>
                     </button></div>` +
-                    "<div>" +
-                    item.content +
-                    "</div>";
-            responseHTML.insertBefore(newDiv, responseHTML.firstChild);
+                      "<div>" +
+                      item.content +
+                      "</div>";
+              responseHTML.insertBefore(newDiv, responseHTML.firstChild);
+            }
           })
         }
       }
@@ -193,7 +197,9 @@
         document.getElementById("showVoiceRecordingDiv").style.display = "none";
         document.getElementById("loaderContainer").style.display = "none";
         displayChatHistory();
-        document.getElementById("clearHistoryDiv").style.display = "none";
+        if(history.length < 1){
+          document.getElementById("clearHistoryDiv").style.display = "none";
+        }
       };
       function showVoiceRecorder() {
         document.getElementById("showVoiceRecordingDiv").style.display =
@@ -287,29 +293,6 @@
             autoplay = false
             console.log(false)
           }
-//         let autoPlayBtn = document.getElementById("autoPlayButton");
-//         if (autoplay === false) {
-//           autoplay = true;
-//           autoPlayBtn.innerHTML =
-//             `<svg class="autoPlayImg" width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-// <path d="M2 14.9588L2 9.04123C2 8.46617 2.44772 8 3 8H6.58579C6.851 8 7.10536 7.8903 7.29289 7.69503L10.2929 4.30706C10.9229 3.65112 12 4.11568 12 5.04332V18.9567C12 19.8908 10.91 20.3524 10.2839 19.6834L7.29437 16.3145C7.10615 16.1134 6.84791 16 6.57824 16H3C2.44772 16 2 15.5338 2 14.9588Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-// <path d="M16 8.5C17.3333 10.2778 17.3333 13.7222 16 15.5" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-// <path d="M19 5C22.9879 8.80835 23.0121 15.2171 19 19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-// </svg>`;
-//         } else {
-//           autoplay = false;
-//           autoPlayBtn.innerHTML =
-//             `<svg class="autoPlayImg" width="800px" height="800px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-//     <title>sound-off</title>
-//     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-//         <g id="icon" fill="#000000" transform="translate(42.666667, 59.581722)">
-//             <path d="M47.0849493,-1.42108547e-14 L409.751616,362.666662 L379.581717,392.836561 L191.749,205.003 L191.749973,369.105851 L81.0208,283.647505 L7.10542736e-15,283.647505 L7.10542736e-15,112.980838 L80.8957867,112.980838 L91.433,104.688 L16.9150553,30.169894 L47.0849493,-1.42108547e-14 Z M361.298133,28.0146513 C429.03793,103.653926 443.79725,209.394854 405.578543,298.152074 L372.628731,265.200172 C396.498116,194.196781 381.626371,113.22828 328.013013,54.642278 L361.298133,28.0146513 Z M121.824,135.078 L95.6874667,155.647505 L42.6666667,155.647505 L42.6666667,240.980838 L95.5624533,240.980838 L149.083307,282.272358 L149.083,162.337 L121.824,135.078 Z M276.912853,95.5237713 C305.539112,127.447886 318.468552,168.292377 315.701384,208.274722 L266.463468,159.037386 C261.494642,145.732631 253.869746,133.179747 243.588693,122.182545 L243.588693,122.182545 Z M191.749973,25.7516113 L191.749,84.325 L158.969,51.545 L191.749973,25.7516113 Z" id="Combined-Shape">
-
-// </path>
-//         </g>
-//     </g>
-// </svg>`;
-//         }
       }
       function copyToClipboard(index) {
         // Copies the text to clipboard
@@ -539,7 +522,7 @@
     <div class="mainContainer">
       <header>
         <div class="container">
-          <h1>IRIS</h1>
+          <h1>AI Assistant</h1>
           <nav>
             <ul>
               <li>
@@ -551,26 +534,13 @@
                   </div>
                 </label>
               </li>
-              <!-- <li>
-                <label>SMS</label>
-                <input type="checkbox"/>
-              </li> -->
-              <!-- <li>
-                <label>Theme</label>
-                <input type="checkbox"/>
-              </li>
-              <li><a href="#">Help</a></li> -->
             </ul>
           </nav>
         </div>
       </header>
       <div class="bodyContainer">
         <div id="textAudioContainer" class="hideBlock textAudio contentWrapper">
-          <!-- <button type="button" class="clearButton" onclick="clearChatHistory()">
-            Clear Chat History
-          </button> -->
           <div id="autoPlayButton" class="iconBtn" onclick="setAutoPlay()">
-            <!-- <img title="Toggle Autoplay Response On/Off" class="autoPlayImg" src="soundOn.svg"/> -->
             <svg class="autoPlayImg" width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M2 14.9588L2 9.04123C2 8.46617 2.44772 8 3 8H6.58579C6.851 8 7.10536 7.8903 7.29289 7.69503L10.2929 4.30706C10.9229 3.65112 12 4.11568 12 5.04332V18.9567C12 19.8908 10.91 20.3524 10.2839 19.6834L7.29437 16.3145C7.10615 16.1134 6.84791 16 6.57824 16H3C2.44772 16 2 15.5338 2 14.9588Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M16 8.5C17.3333 10.2778 17.3333 13.7222 16 15.5" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -642,9 +612,6 @@
             <button type="button" class="clearButton" onclick="clearChatHistory()">
               Clear Chat History
             </button>
-            <!-- <canvas id="canvas">
-              Your browser does not support the HTML canvas tag.
-              </canvas> -->
           </div>
           <div class="resp chatWindow" id="response"></div>
         </div>

@@ -42,6 +42,7 @@
         document.getElementById("soundWaveContainer").style.display = "none";
         //remove notes
         document.getElementById("notesContainer").style.display = "none";
+        document.getElementById("clearHistoryDiv").style.display = "block";
         $.ajax({
           type: "POST",
           url: "/Inference/freestyle/",
@@ -82,7 +83,7 @@
               "<div>" +
               data +
               "</div>";
-            responseHTML.insertAdjacentElement('beforeend', newDiv);
+            responseHTML.insertAdjacentElement('afterbegin', newDiv);
           },
           error: function (xhr, ajaxOptions, thrownError) {
             // document.getElementById("loaderContainer").style.display = "none";
@@ -102,7 +103,7 @@
         let notesHTML = document.getElementById("notesContainer");
         notesHTML.style.display = "block";
         notesHTML.innerHTML =
-          '<div><label>Notes:</label><textarea id="notes"></textarea></div>';
+          '<div><label>Notes</label><textarea id="notes"></textarea></div>';
       }
       function getImageText() {
         let formData = new FormData();
@@ -154,6 +155,7 @@
         document.getElementById("textAudioContainer").style.display = "none";
         document.getElementById("showVoiceRecordingDiv").style.display = "none";
         document.getElementById("loaderContainer").style.display = "none";
+        document.getElementById("clearHistoryDiv").style.display = "none";
       };
       function showVoiceRecorder() {
         document.getElementById("showVoiceRecordingDiv").style.display =
@@ -170,6 +172,7 @@
         document.getElementById("textAudioContainer").style.display = "none";
         document.getElementById("response").innerHTML = "";
         document.getElementById("textToAudio").innerHTML = "";
+        document.getElementById("clearHistoryDiv").style.display = "none";
         alert("Chat History has been cleared.");
       }
 
@@ -189,20 +192,22 @@
               document.getElementById("textAudioContainer").style.display =
                 "flex";
               audio.innerHTML =
-                "<audio controls autoplay id='botAudio'>" +
+                "<audio autoPlay controls id='botAudio' crossorigin='anonymous'>" +
                 '  <source src="' +
                 data +
                 '" type="audio/mp3">' +
                 "Your browser does not support the audio element." +
                 "</audio>";
+                // showAudioFrequencyBar(true, data)
             } else {
               audio.innerHTML =
-                "<audio controls id='botAudio'>" +
+                "<audio controls id='botAudio' crossorigin='anonymous'>" +
                 '  <source src="' +
                 data +
                 '" type="audio/mp3">' +
                 "Your browser does not support the audio element." +
                 "</audio>";
+                // showAudioFrequencyBar(false, data)
             }
           },
           error: function (xhr, ajaxOptions, thrownError) {
@@ -456,21 +461,20 @@
                   </div>
                 </label>
               </li>
-              <li>
+              <!-- <li>
                 <label>SMS</label>
                 <input type="checkbox"/>
-              </li>
-              <li>
+              </li> -->
+              <!-- <li>
                 <label>Theme</label>
                 <input type="checkbox"/>
               </li>
-              <li><a href="#">Help</a></li>
+              <li><a href="#">Help</a></li> -->
             </ul>
           </nav>
         </div>
       </header>
       <div class="bodyContainer">
-        <div id="notesContainer"></div>
         <div id="textAudioContainer" class="hideBlock textAudio contentWrapper">
           <!-- <button type="button" class="clearButton" onclick="clearChatHistory()">
             Clear Chat History
@@ -485,13 +489,8 @@
           </div>
           <div id="textToAudio"></div>
         </div>
-        <!-- <canvas></canvas> -->
         <div id="loaderContainer" class="loaderDiv"></div>
         <div class="chatIOContainer container">
-          <button type="button" class="clearButton" onclick="clearChatHistory()">
-            Clear Chat History
-          </button>
-          <div class="resp chatWindow" id="response"></div>
           <div class="inputContainer">
             <form id="apiform" onsubmit="addUserInput(this);callAPI();return false">
               <div id="soundWaveContainer">
@@ -548,6 +547,16 @@
               <ol id="recordingsList"></ol>
             </div>
           </div>
+          <div id="notesContainer"></div>
+          <div id="clearHistoryDiv">
+            <button type="button" class="clearButton" onclick="clearChatHistory()">
+              Clear Chat History
+            </button>
+            <!-- <canvas id="canvas">
+              Your browser does not support the HTML canvas tag.
+              </canvas> -->
+          </div>
+          <div class="resp chatWindow" id="response"></div>
         </div>
         <script src="recorder.js"></script>
         <script src="app.js"></script>

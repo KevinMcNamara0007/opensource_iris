@@ -2,7 +2,8 @@
   --searchbar-border-color: #9d9d9d;
   --main-button-hover-color: #4d7ab1;
   --searchbar-icon-color: #787878;
-  --header-height: 100px
+  --header-height: 100px;
+  --loader-color: #9d9d9d;
 }
 
 body {
@@ -151,7 +152,8 @@ div.inputContainer {
   background-color: transparent;
   padding-left: 0;
   padding-right: 0;
-  margin-bottom: 0;
+  margin-bottom: 0px;
+  margin-top: 10px;
 }
 .inputContainer form {
   padding-top: 0;
@@ -247,6 +249,7 @@ button#stopButton .recordIconWrapper {
 /* Notes section */
 div#notesContainer {
   margin: 0 auto;
+  width: 100%;
 }
 div#notesContainer label {
   font-size: 18px;
@@ -257,6 +260,7 @@ div#notesContainer label {
 textarea#notes {
   border-color: var(--searchbar-border-color);
   border-width: 1px;
+  border-radius: 5px;
 
   color: #4b4b4b;
 }
@@ -266,15 +270,17 @@ textarea#notes {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - var(--header-height));
+  /* max-height: calc(100vh - var(--header-height)); */
 }
 .chatWindow {
-  min-height: 400px;
-  overflow-y: auto;
+  /* min-height: 300px; */
+  /* overflow-y: auto; */
   padding: 10px;
   border-radius: 10px;
-  background-color: #333;
+  /* background-color: #333; */
   flex-grow: 1;
+
+  position: relative;
 }
 div.resp {
   width: 100% !important;
@@ -301,7 +307,7 @@ div.responseDiv {
   }
 }
 button.clearButton {
-  margin-top: 36px;
+  margin-top: 10px;
   margin-right: auto;
   margin-bottom: 10px;
   background: transparent !important;
@@ -322,7 +328,7 @@ button.clearButton:hover {
 }
 
 .userChat {
-  background-color: #1d1d1d !important;
+  background-color: #3b3b3b !important;
   animation: right-to-left 0.1s 1 linear;
   margin-right: auto;
   overflow: hidden;
@@ -350,9 +356,12 @@ button.clearButton:hover {
   margin-top: 10px !important;
   position: relative;
 }
-canvas {
-  width: 400px;
-  height: 100px;
+#canvas {
+  background-color: transparent;
+  width: 200px;
+  height: 50px;
+  position: relative;
+  float: right;
 }
 #soundWaveContainer {
   position: absolute;
@@ -460,8 +469,8 @@ canvas {
   width: 10px;
   height: 10px;
   border-radius: 5px;
-  background-color: #9880ff;
-  color: #9880ff;
+  background-color: var(--loader-color);
+  color: var(--loader-color);
   animation: dot-elastic 1s infinite linear;
 }
 .dot-elastic::before, .dot-elastic::after {
@@ -475,8 +484,8 @@ canvas {
   width: 10px;
   height: 10px;
   border-radius: 5px;
-  background-color: #9880ff;
-  color: #9880ff;
+  background-color: var(--loader-color);
+  color: var(--loader-color);
   animation: dot-elastic-before 1s infinite linear;
 }
 .dot-elastic::after {
@@ -484,8 +493,8 @@ canvas {
   width: 10px;
   height: 10px;
   border-radius: 5px;
-  background-color: #9880ff;
-  color: #9880ff;
+  background-color: var(--loader-color);
+  color: var(--loader-color);
   animation: dot-elastic-after 1s infinite linear;
 }
 

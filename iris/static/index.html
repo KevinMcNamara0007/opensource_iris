@@ -239,7 +239,7 @@
       function generateImage(text){
         let formData = new FormData();
         formData.append("prompt", text);
-
+        document.getElementById("clearHistoryDiv").style.display = "block";
         $.ajax({
           type: "POST",
           url: "/Inference/imageGeneration/",

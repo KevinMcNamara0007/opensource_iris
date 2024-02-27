@@ -130,17 +130,20 @@ function createDownloadLink(blob) {
 				if(search.value !== ""){
 					search = document.getElementById("instructions")
 					search.value = text;
+					addUserInputText(text)
 					callAPI()
 				}
 				if(search.value === ""){
 					search = document.getElementById("instructions")
 					search.value = text;
+					addUserInputText(text)
 					callAPI()
 				}
 			}
 			else{
 				search = document.getElementById("instructions")
 				search.value = text;
+				addUserInputText(text)
 				callAPI()
 			}
 		}

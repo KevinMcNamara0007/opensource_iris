@@ -1,9 +1,9 @@
 :root {
   --searchbar-border-color: #9d9d9d;
-  --main-button-hover-color: #4d7ab1;
-  --searchbar-icon-color: #787878;
+  --main-button-hover-color: rgb(28, 58, 195);
+  --searchbar-icon-color: #4b4b4b;
   --header-height: 100px;
-  --loader-color: #9d9d9d;
+  --loader-color: rgb(28, 58, 195);
 }
 
 body {
@@ -54,11 +54,13 @@ nav ul {
   list-style-type: none;
   padding: 0;
   margin: 16px 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
 }
 
 nav ul li {
-  /* display: inline; */
-  margin-right: 20px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -275,7 +277,7 @@ textarea#notes {
 .chatWindow {
   /* min-height: 300px; */
   /* overflow-y: auto; */
-  padding: 10px;
+  padding: 10px 0;
   border-radius: 10px;
   /* background-color: #333; */
   flex-grow: 1;
@@ -289,7 +291,7 @@ div.resp {
   margin-top: 0;
 }
 div.responseDiv {
-  border-color: var(--searchbar-border-color);
+  border-color: #3c6c4c;
   border-radius: 5px;
 }
 .botChat {
@@ -319,9 +321,38 @@ button.clearButton:hover {
 }
 #copyButton {
   display: flex;
+  padding: 5px;
+  position: relative;
+  border-radius: 5px;
+}
+#copyButton svg {
+  width: 24px;
+  height: 24px;
 }
 #copyButton svg path {
-  fill: #676767;
+  fill: #fff;
+}
+#copyButton:active {
+  cursor: grab;
+}
+#copyButton:active::after {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(100%,-100%);
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.294);
+  border-radius: 5px;
+  content: "Copied";
+  color: #fff;
+  font-size: 16px;
+}
+#copyButton:hover {
+  transform: scale(1.0);
+  background-color: rgb(28, 43, 153);
+}
+#copyButton:hover svg path {
 }
 #autoPlayButton svg path {
   stroke: #676767;
@@ -333,6 +364,9 @@ button.clearButton:hover {
   margin-right: auto;
   overflow: hidden;
   width: 100%;
+}
+.responseDiv.userChat {
+  border-color: var(--searchbar-border-color);
 }
 @keyframes left-to-right {
   from {
@@ -355,13 +389,6 @@ button.clearButton:hover {
   margin-bottom: 10px !important;
   margin-top: 10px !important;
   position: relative;
-}
-#canvas {
-  background-color: transparent;
-  width: 200px;
-  height: 50px;
-  position: relative;
-  float: right;
 }
 #soundWaveContainer {
   position: absolute;
@@ -549,7 +576,64 @@ button.clearButton:hover {
     transform: scale(1, 1);
   }
 }
-
+/* Audio frequency player */
+#responseAudio {
+  display: block;
+}
+.audioFrequencyBar {
+  margin-left: auto;
+}
+#canvas {
+  background-color: transparent;
+  background-color: #1f1f1f;
+  width: 200px;
+  height: 20px;
+  /* position: relative; */
+  /* float: right; */
+}
+#audioControls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+#audioControls button {
+  background-color: transparent;
+  border: 0;
+}
+#audioControl.pause #pause,
+#audioControl.resume #resume {
+  display: block;
+}
+#audioControl.pause #resume,
+#audioControl.resume #pause {
+  display: none;
+}
+#audioVolume.unmuted #unmuted,
+#audioVolume.muted #muted {
+  display: block;
+}
+#audioVolume.muted #unmuted,
+#audioVolume.unmuted #muted {
+  display: none;
+}
+.iconWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.iconWrapper svg{
+  width: 18px;
+  height: 18px;
+}
+#pause svg,
+#resume svg {
+  fill: #af0101;
+}
+#unmuted svg, 
+#muted svg {
+  fill: #fff;
+}
 /* Media queries*/
 @media (max-width: 1200px) {
   .container {

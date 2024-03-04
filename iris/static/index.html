@@ -70,8 +70,6 @@
         formData.append("prompt", instructions);
 
         let responseHTML = document.getElementById("response");
-        let newDiv = document.createElement("div");
-        newDiv.className = "responseDiv botChat";
 
         document.getElementById("textAudioContainer").style.display = "none";
         document.getElementById("soundWaveContainer").style.display = "none";
@@ -108,18 +106,7 @@
             localStorage.setItem("history", JSON.stringify(history));
 
             //Display Response
-            newDiv.innerHTML =
-              '<div><button id="copyButton" class="copyText iconBtn" onclick="copyToClipboard(' +
-              history.indexOf(assistantObject) +
-              `)">
-              <svg class="autoPlayImg" width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19.53 8L14 2.47C13.8595 2.32931 13.6688 2.25018 13.47 2.25H11C10.2707 2.25 9.57118 2.53973 9.05546 3.05546C8.53973 3.57118 8.25 4.27065 8.25 5V6.25H7C6.27065 6.25 5.57118 6.53973 5.05546 7.05546C4.53973 7.57118 4.25 8.27065 4.25 9V19C4.25 19.7293 4.53973 20.4288 5.05546 20.9445C5.57118 21.4603 6.27065 21.75 7 21.75H14C14.7293 21.75 15.4288 21.4603 15.9445 20.9445C16.4603 20.4288 16.75 19.7293 16.75 19V17.75H17C17.7293 17.75 18.4288 17.4603 18.9445 16.9445C19.4603 16.4288 19.75 15.7293 19.75 15V8.5C19.7421 8.3116 19.6636 8.13309 19.53 8ZM14.25 4.81L17.19 7.75H14.25V4.81ZM15.25 19C15.25 19.3315 15.1183 19.6495 14.8839 19.8839C14.6495 20.1183 14.3315 20.25 14 20.25H7C6.66848 20.25 6.35054 20.1183 6.11612 19.8839C5.8817 19.6495 5.75 19.3315 5.75 19V9C5.75 8.66848 5.8817 8.35054 6.11612 8.11612C6.35054 7.8817 6.66848 7.75 7 7.75H8.25V15C8.25 15.7293 8.53973 16.4288 9.05546 16.9445C9.57118 17.4603 10.2707 17.75 11 17.75H15.25V19ZM17 16.25H11C10.6685 16.25 10.3505 16.1183 10.1161 15.8839C9.8817 15.6495 9.75 15.3315 9.75 15V5C9.75 4.66848 9.8817 4.35054 10.1161 4.11612C10.3505 3.8817 10.6685 3.75 11 3.75H12.75V8.5C12.7526 8.69811 12.8324 8.88737 12.9725 9.02747C13.1126 9.16756 13.3019 9.24741 13.5 9.25H18.25V15C18.25 15.3315 18.1183 15.6495 17.8839 15.8839C17.6495 16.1183 17.3315 16.25 17 16.25Z" fill="#000000"/>
-              </svg>
-              </button></div>` +
-              "<div>" +
-              data +
-              "</div>";
-            responseHTML.insertAdjacentElement('afterbegin', newDiv);
+            insertResponseBox(responseHTML, data, history.indexOf(assistantObject))
           },
           error: function (xhr, ajaxOptions, thrownError) {
             // document.getElementById("loaderContainer").style.display = "none";
@@ -138,21 +125,7 @@
             if(item.role.includes("user")){
               addUserInputText(item.content)
             }else{
-              let newDiv = document.createElement("div");
-              newDiv.className = "responseDiv";
-              newDiv.innerHTML =
-                      '<div><button id="copyButton" class="copyText iconBtn" onclick="copyToClipboard(' +
-                      history.indexOf(item) +
-                      `)">
-                    <svg class="autoPlayImg" width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M19.53 8L14 2.47C13.8595 2.32931 13.6688 2.25018 13.47 2.25H11C10.2707 2.25 9.57118 2.53973 9.05546 3.05546C8.53973 3.57118 8.25 4.27065 8.25 5V6.25H7C6.27065 6.25 5.57118 6.53973 5.05546 7.05546C4.53973 7.57118 4.25 8.27065 4.25 9V19C4.25 19.7293 4.53973 20.4288 5.05546 20.9445C5.57118 21.4603 6.27065 21.75 7 21.75H14C14.7293 21.75 15.4288 21.4603 15.9445 20.9445C16.4603 20.4288 16.75 19.7293 16.75 19V17.75H17C17.7293 17.75 18.4288 17.4603 18.9445 16.9445C19.4603 16.4288 19.75 15.7293 19.75 15V8.5C19.7421 8.3116 19.6636 8.13309 19.53 8ZM14.25 4.81L17.19 7.75H14.25V4.81ZM15.25 19C15.25 19.3315 15.1183 19.6495 14.8839 19.8839C14.6495 20.1183 14.3315 20.25 14 20.25H7C6.66848 20.25 6.35054 20.1183 6.11612 19.8839C5.8817 19.6495 5.75 19.3315 5.75 19V9C5.75 8.66848 5.8817 8.35054 6.11612 8.11612C6.35054 7.8817 6.66848 7.75 7 7.75H8.25V15C8.25 15.7293 8.53973 16.4288 9.05546 16.9445C9.57118 17.4603 10.2707 17.75 11 17.75H15.25V19ZM17 16.25H11C10.6685 16.25 10.3505 16.1183 10.1161 15.8839C9.8817 15.6495 9.75 15.3315 9.75 15V5C9.75 4.66848 9.8817 4.35054 10.1161 4.11612C10.3505 3.8817 10.6685 3.75 11 3.75H12.75V8.5C12.7526 8.69811 12.8324 8.88737 12.9725 9.02747C13.1126 9.16756 13.3019 9.24741 13.5 9.25H18.25V15C18.25 15.3315 18.1183 15.6495 17.8839 15.8839C17.6495 16.1183 17.3315 16.25 17 16.25Z" fill="#000000"/>
-                    </svg>
-                    </button>
-                    </div>` +
-                      "<div>" +
-                      item.content +
-                      "</div>";
-              responseHTML.insertBefore(newDiv, responseHTML.firstChild);
+              insertResponseBox(responseHTML, item.content, history.indexOf(item))
             }
           })
         }
@@ -252,13 +225,7 @@
             //show Response
             responseHTML.style.display = "flex";
 
-            let newDiv = document.createElement("div");
-            newDiv.className = "responseDiv";
-            newDiv.innerHTML =
-                    "<div>" +
-                    "<img alt='generatedImage' src='" + data + "'/>" +
-                    "</div>";
-            responseHTML.insertBefore(newDiv, responseHTML.firstChild);
+            insertImageResponseBox(responseHTML, data)
 
             //Enable All Form Elements and Disable Loader
             enableElements()
@@ -275,6 +242,13 @@
 
       let autoplay = true;
       function getTextToAudio(text) {
+        const audioPopup = document.getElementById("audioPopup")
+        const audioLoader = document.getElementById("audioLoader")
+        const audioBar = document.getElementById("audioFrequencyBar")
+        audioPopup.style.display = "flex"
+        audioLoader.style.display = "block"
+        audioBar.style.display = "none"
+
         let formData = new FormData();
         formData.append("text", text);
         $.ajax({
@@ -430,9 +404,7 @@
         font-size: 18px;
         font-family: "Open Sans", sans-serif;
         margin-bottom: 20px;
-        padding: 20px;
         background: rgba(0, 0, 0, 0.01);
-        border: 1px solid black;
 
         img{
           margin: auto;
@@ -459,7 +431,6 @@
         height: 200px;
       }
       .fileName {
-        padding-top: 5px;
         right: 105px;
         position: relative;
         font-size: 20px;
@@ -568,52 +539,34 @@
 
   <body>
     <!-- Add your site or application content here -->
-    <div class="mainContainer">
+    <div class="mainContainer stretchRoot stretch">
       <header>
         <div class="container">
-          <h1>AI Assistant</h1>
-          <nav>
-            <ul>
-              <li>
-                <label id="soundToggle">
-                  <div>Sound</div>
-                  <div class="switch">
-                    <input type="checkbox" id="togBtn" checked="checked" onclick="setAutoPlay()">
-                    <div class="slider round"></div>
-                  </div>
-                </label>
-              </li>
-              <li id="clearHistoryDiv">
-                <button type="button" class="clearButton" onclick="clearChatHistory()">
-                  Clear Chat History
-                </button>
-              </li>
-              <li class="audioFrequencyBar">
-                <canvas id="canvas" style="display: none;"></canvas>
-                <div id="audioControls" style="display: none;">
-                    <button id="audioControl" class="pause" onclick="handleAudioControl()">
-                      <div class="iconWrapper" id="pause">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M4 2h6v20H4zm10 20h6V2h-6z"></path><path fill="none" d="M0 0h24v24H0z"></path></g></svg>
-                      </div>
-                      <div class="iconWrapper" id="resume">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M6 1.773l15 10.23L6 22.226z"></path><path fill="none" d="M0 0h24v24H0z"></path></g></svg>
-                      </div>
-                    </button>
-                    <!-- <button id="audioVolume" class="unmuted" onclick="handleAudioVolume()">
-                      <div class="iconWrapper" id="unmuted">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M11.193 4.452L5.67 9H2.376A1.376 1.376 0 0 0 1 10.376v3.248A1.376 1.376 0 0 0 2.376 15h3.293l5.524 4.548a.51.51 0 0 0 .807-.414V4.866a.51.51 0 0 0-.807-.414zM11 18.088L6.028 14H2.375A.375.375 0 0 1 2 13.625v-3.25A.375.375 0 0 1 2.375 10h3.653L11 5.911zm4.47-12.744A9.975 9.975 0 0 1 18 11.987a9.848 9.848 0 0 1-2.566 6.646l-.74-.672A8.872 8.872 0 0 0 17 11.987a8.984 8.984 0 0 0-2.277-5.978zm3.46-3.933A15.817 15.817 0 0 1 23 11.989a15.945 15.945 0 0 1-4.035 10.576l-.735-.65A14.966 14.966 0 0 0 22 11.988a14.852 14.852 0 0 0-3.8-9.924z"></path><path fill="none" d="M0 0h24v24H0z"></path></g></svg>
-                      </div>
-                      <div class="iconWrapper" id="muted">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M11 14.828l1 1v3.306a.51.51 0 0 1-.807.414L5.67 15H2.376A1.376 1.376 0 0 1 1 13.624v-3.248A1.376 1.376 0 0 1 2.376 9h2.796l.935.935-.079.065H2.375a.375.375 0 0 0-.375.375v3.25a.375.375 0 0 0 .375.375h3.653L11 18.088zm12-2.839a15.867 15.867 0 0 1-2.615 8.69l1.014 1.013-.707.707L1.601 3.308l.707-.708 5.027 5.028 3.858-3.176a.51.51 0 0 1 .807.414v7.427l3.922 3.922A8.867 8.867 0 0 0 17 11.987a8.984 8.984 0 0 0-2.277-5.978l.747-.665A9.975 9.975 0 0 1 18 11.987a9.847 9.847 0 0 1-1.343 4.963l3.02 3.02A14.936 14.936 0 0 0 22 11.99a14.852 14.852 0 0 0-3.8-9.925l.73-.654A15.817 15.817 0 0 1 23 11.989zM8.047 8.34L11 11.294V5.91z"></path><path fill="none" d="M0 0h24v24H0z"></path></g></svg>
-                      </div>
-                    </button> -->
-                </div>
-              </li>
-            </ul>
-          </nav>
+          <div class="hero">
+            <h1>Welcome to AI Assistant</h1>
+            <h2>How can I assist you?</h2>
+          </div>
         </div>
       </header>
-      <div class="bodyContainer">
+      <nav>
+        <ul>
+          <li>
+            <label id="soundToggle">
+              <div>Sound</div>
+              <div class="switch">
+                <input type="checkbox" id="togBtn" checked="checked" onclick="setAutoPlay()">
+                <div class="slider round"></div>
+              </div>
+            </label>
+          </li>
+          <li id="clearHistoryDiv">
+            <button type="button" class="clearButton" onclick="clearChatHistory()">
+              Clear Chat History
+            </button>
+          </li>
+        </ul>
+      </nav>
+      <div class="bodyContainer stretchChild stretch">
         <div id="textAudioContainer" class="hideBlock textAudio contentWrapper">
           <div id="autoPlayButton" class="iconBtn" onclick="setAutoPlay()">
             <svg class="autoPlayImg" width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -625,7 +578,7 @@
           <div id="textToAudio"></div>
         </div>
         <div id="loaderContainer" class="loaderDiv"></div>
-        <div class="chatIOContainer container">
+        <div class="chatIOContainer container stretchChild stretch">
           <div class="inputContainer">
             <form id="apiform" onsubmit="addUserInput(this);evaluatePrompt();return false">
               <div id="soundWaveContainer">
@@ -683,7 +636,25 @@
             </div>
           </div>
           <div id="notesContainer"></div>
-          <div class="resp chatWindow" id="response"></div>
+          <div class="resp chatWindow scrollBar stretchChild" id="response"></div>
+          <div id="audioPopup" style="display: none;">
+            <div id="audioLoader">
+              <div class="dot-elastic"></div>
+            </div>
+            <div id="audioFrequencyBar" style="display: none;">
+              <canvas id="canvas"></canvas>
+              <div id="audioControls" class="pause">
+                  <button id="audioControl" class="pause" onclick="handleAudioControl()">
+                    <div class="iconWrapper" id="pause">
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M4 2h6v20H4zm10 20h6V2h-6z"></path><path fill="none" d="M0 0h24v24H0z"></path></g></svg>
+                    </div>
+                    <div class="iconWrapper" id="resume">
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M6 1.773l15 10.23L6 22.226z"></path><path fill="none" d="M0 0h24v24H0z"></path></g></svg>
+                    </div>
+                  </button>
+              </div>
+            </div>
+          </div>
         </div>
         <audio id="responseAudio" preload="auto" crossorigin="anonymous">
           <source src="assets/250-milliseconds-of-silence.mp3" type="audio/mp3">

@@ -133,9 +133,15 @@
 
       function loadNotes() {
         let notesHTML = document.getElementById("notesContainer");
-        notesHTML.style.display = "block";
-        notesHTML.innerHTML =
+
+        if(notesHTML.style.display === "block") {
+          notesHTML.style.display = "none"
+        }
+        else {
+          notesHTML.innerHTML =
           '<div><label>Notes</label><textarea id="notes"></textarea></div>';
+          notesHTML.style.display = "block";
+        }
       }
       function getImageText() {
         let formData = new FormData();
@@ -180,7 +186,9 @@
         let file = document.getElementById("file").files[0];
         console.log(file);
         let fileName = document.getElementById("fileName");
-        fileName.innerText = "File: " + file.name;
+        fileName.innerHTML = `
+        <div class="fileBox"><span>${file.name}</span><button type="button" onclick="removeFile()">&#215;</button></div>`
+        // fileName.innerText = "File: " + file.name;
       }
       window.onload = function () {
         document.getElementById("stopButton").style.display = "none";
@@ -431,11 +439,8 @@
         height: 200px;
       }
       .fileName {
-        right: 105px;
-        position: relative;
+        margin-top: 10px;
         font-size: 20px;
-        text-align: right;
-        font-weight: 500;
       }
       #showVoiceRecordingDiv {
         padding-top: 20px;
@@ -579,6 +584,7 @@
         </div>
         <div id="loaderContainer" class="loaderDiv"></div>
         <div class="chatIOContainer container stretchChild stretch">
+          <div class="resp chatWindow scrollBar stretchChild" id="response"></div>
           <div class="inputContainer">
             <form id="apiform" onsubmit="addUserInput(this);evaluatePrompt();return false">
               <div id="soundWaveContainer">
@@ -634,9 +640,8 @@
               </div>
               <ol id="recordingsList"></ol>
             </div>
+            <div id="notesContainer"></div>
           </div>
-          <div id="notesContainer"></div>
-          <div class="resp chatWindow scrollBar stretchChild" id="response"></div>
           <div id="audioPopup" style="display: none;">
             <div id="audioLoader">
               <div class="dot-elastic"></div>

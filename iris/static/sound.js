@@ -8,14 +8,20 @@ let request;
 let flag = 0;
 let height = 0;
 
+var wrapper;
+const audioPopup = document.getElementById("audioPopup")
 const canvas = document.getElementById("canvas");
 const controlBar = document.getElementById("audioControls");
 const ctx = canvas.getContext("2d");
-const bars = 100;
-const lineWidth = 3;
-
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
+// var canvas;
+// var controlBar;
+// var ctx;
+// var centerX;
+// var centerY;
+const bars = 100;
+const lineWidth = 3;
 
 function showAudioFrequencyBar(autoPlay, filepath) {
   console.log("create audio...", filepath);
@@ -46,9 +52,18 @@ function showAudioFrequencyBar(autoPlay, filepath) {
 
     frequencyArray = new Uint8Array(analyser.frequencyBinCount);
 
-    // // Trigger draw
+    // Get elements and initialize
+    // const lastChat = document.getElementById("response").lastChild;
+    // canvas = lastChat.querySelector("#canvas");
+    // controlBar = lastChat.querySelector("#audioControls");
+    // ctx = canvas.getContext("2d");
+    // centerX = canvas.width / 2;
+    // centerY = canvas.height / 2;
+
+    // Trigger draw
+    showAudioResponseEle()
     canvas.style.display = "block";
-    controlBar.style.display = "block";
+    // controlBar.style.display = "flex";
     if(autoPlay) {
       updateAudioControlStyle("on")
       audio.play()
@@ -64,7 +79,7 @@ function beginDraw() {
   console.log("begin audio visualizer..")
   // audio.play()
   // canvas.style.display = "block";
-  // controlBar.style.display = "block";
+  // controlBar.style.display = "flex";
   drawCanvas();
 }
 
@@ -81,15 +96,16 @@ function close(audio) {
   }
   audio.src = "";
   canvas.style.display = "none";
-  controlBar.style.display = "none";
-
+  // controlBar.style.display = "none";
+  wrapper.style.display = "none";
+  audioPopup.style.display = "none";
 }
 
 const drawCanvas = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   analyser.getByteFrequencyData(frequencyArray);
 
-  ctx.fillStyle = "#ff0000";
+  ctx.fillStyle = "rgb(0, 69, 255)";
   const barWidth = 2;
   const scale = 1.1;
   for (let i = 0; i < bars; i++) {
@@ -109,7 +125,9 @@ const drawCanvas = () => {
 
 
 function handleAudioControl() {
-  const control = document.getElementById("audioControl")
+  // const lastChat = document.getElementById("response").lastChild;
+  // const control = lastChat.querySelector("#audioControl")
+  const control = document.querySelector("#audioControls")
   if(control.classList.contains("pause")) {
     control.classList.remove("pause")
     control.classList.add("resume")
@@ -122,7 +140,9 @@ function handleAudioControl() {
   }
 }
 function handleAudioVolume() {
-  const control = document.getElementById("audioVolume")
+  // const lastChat = document.getElementById("response").lastChild;
+  // const control = lastChat.querySelector("#audioVolume")
+  const control = document.querySelector("#audioVolume")
   if(control.classList.contains("unmuted")) {
     control.classList.remove("unmuted")
     control.classList.add("muted")
@@ -137,7 +157,9 @@ function handleAudioVolume() {
   }
 }
 function updateAudioControlStyle(str) {
-  const control = document.getElementById("audioControl")
+  // const lastChat = document.getElementById("response").lastChild;
+  // const control = lastChat.querySelector("#audioControl")
+  const control = document.querySelector("#audioControl")
   if(str==="off") { //sound currently off
     control.classList.remove("pause")
     control.classList.add("resume")
@@ -146,4 +168,12 @@ function updateAudioControlStyle(str) {
     control.classList.remove("resume")
     control.classList.add("pause")
   }
+}
+
+function showAudioResponseEle() {
+  const loader = document.getElementById("audioLoader")
+  loader.style.display = "none"
+
+  wrapper = document.getElementById("audioFrequencyBar")
+  wrapper.style.display = "flex"
 }

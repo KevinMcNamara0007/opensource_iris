@@ -42,11 +42,11 @@ def text_to_speech(text):
         model="tts-1",
         voice="alloy",
         input=text,
+        response_format="wav"
     )
-    print(response)
     random_number = random.randrange(1, 10000, 3)
-    response.stream_to_file(f"static/audio/{random_number}.mp3")
-    return f"audio/{random_number}.mp3"
+    response.stream_to_file(f"static/audio/{random_number}.wav")
+    return f"audio/{random_number}.wav"
 
 
 def image_generation(prompt):

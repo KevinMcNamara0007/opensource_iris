@@ -8,10 +8,9 @@
 }
 body {
   /* color: #4b4b4b; */
-  font-family: "Open Sans", sans-serif;
+  font-family: "Open Sans", Arial, sans-serif;
   background-color: #1e1e1e;
   color: #fff;
-  font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -47,7 +46,7 @@ div.contentWrapper {
 }
 .stretchChild {
   flex: 1 1;
-  min-height: 300px;
+  min-height: 0px;
 }
 .scrollBar {
 
@@ -66,25 +65,63 @@ div.contentWrapper {
   background: #555;
 }
 /* Header */
-header, footer {
-  background-color: #333;
-  padding: 10px 0;
-  color: #fff;
-}
-header .container {
-  /* padding: 20px 0; */
-}
 header {
-  /* height: var(--header-height); */
+  /* padding: 20px 0; */
+  color: #fff;
+  position: relative;
+  height: 400px;
+}
+header::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: -1;
+
+  display: block;
+  background-image: url('assets/bg.jpg');
+  background-size: cover;
+  background-position: 50% 50%;
+  width: 100%;
+  height: 100%;
+
+  /* -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px); */
+  filter: blur(0px) brightness(0.7);
 }
 header h1 {
   margin: 0;
   margin-bottom: 18px;
 }
 .hero {
+  height: 100%;
   text-align: center;
   padding: 24px;
+  padding-top: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
+/* Navbar */
+.navbar {
+  height: 50px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 10px;
+}
+.brand {
+  font-size: 24px;
+  font-weight: 700;
+}
+/* Panel */
 nav ul {
   background-color: #000;
   list-style-type: none;
@@ -184,6 +221,7 @@ input:checked + .slider:after {
 }
 /* search bar */
 div.inputContainer {
+  height: 50px;
   background-color: black;
   background: radial-gradient(#000, #1a1a1a);
   border-radius: 999px;
@@ -807,6 +845,32 @@ button#audioControl {
 }
 #audioControls.resume #pause {
   display: none;
+}
+/* Guide */
+#guide {
+  height: 100%;
+  color: #676767;
+}
+#guide img {
+  object-fit: cover;
+  margin-top: 18px;
+  filter: brightness(0.8);
+  width: 300px;
+  height: 200px;
+  object-position: 0% 30%;
+}
+#guide span {
+  margin-bottom: 18px;
+  display: block;
+  width: 100%;
+}
+.example {
+  width: 100%;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10px;
+
 }
 /* Media queries*/
 @media (max-width: 1200px) {

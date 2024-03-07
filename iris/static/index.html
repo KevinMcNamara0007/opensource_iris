@@ -19,6 +19,7 @@
 
       function evaluatePrompt(){
         document.getElementById("soundWaveContainer").style.display = "none";
+        document.getElementById("guide").style.display = "none";
         displayLoader()
 
         //Disable form elements
@@ -198,6 +199,7 @@
         displayChatHistory();
         if(history.length < 1){
           document.getElementById("clearHistoryDiv").style.display = "none";
+          document.getElementById("response").innerHTML = guideDiv;
         }
       };
       function showVoiceRecorder() {
@@ -213,7 +215,7 @@
         localStorage.removeItem("history");
         history = [];
         document.getElementById("textAudioContainer").style.display = "none";
-        document.getElementById("response").innerHTML = "";
+        document.getElementById("response").innerHTML = guideDiv;
         document.getElementById("textToAudio").innerHTML = "";
         document.getElementById("clearHistoryDiv").style.display = "none";
       }
@@ -323,6 +325,21 @@
         // Copies the text to clipboard
         navigator.clipboard.writeText(history[index].content);
       }
+
+      const guideDiv = 
+      `<div id="guide">
+        <span>Sample prompts:</span>
+        <div class="example">
+        Generate me an image of a dog holding ice cream cones.
+        <img src="assets/dog.png" alt="dog">
+        </div>
+        <div class="example">
+          Draft a business plan for the Research and Development team for 2024
+          <div>
+          <b>Business Plan for Research and Development Team 2024</b>\n\n1. Executive Summary:\nThe objective for 2024 is to enhance our organization's market position by developing innovative products and improving existing ones, ensuring they are sustainable, cost-effective, and meet consumer needs. We aim for a 15% growth in our product line's market share by Q4 2024.\n\n2. Team Structure and Roles:\n- Head of R&D: Overseeing all R&D activities...\n
+          </div>
+        </div>
+      </div>`
 
     </script>
     <style>
@@ -546,11 +563,12 @@
     <!-- Add your site or application content here -->
     <div class="mainContainer stretchRoot stretch">
       <header>
-        <div class="container">
-          <div class="hero">
-            <h1>Welcome to AI Assistant</h1>
-            <h2>How can I assist you?</h2>
-          </div>
+        <div class="navbar">
+          <div class="brand">AI Assistant</div>
+        </div>
+        <div class="hero">
+          <h1>Welcome to AI Assistant</h1>
+          <h2>How can I assist you?</h2>
         </div>
       </header>
       <nav>

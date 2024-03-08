@@ -18,11 +18,10 @@ accepted_files = {
     "xls": "Excel Workbooks",
     "ppt": "Powerpoint Presentations"
 }
-api_key = "Replace with your OpenAI API Key here"
-client = OpenAI(api_key=api_key)
 
 
-def voice_transcription(audio_file):
+def voice_transcription(audio_file, api_key):
+    client = OpenAI(api_key=api_key)
     try:
         audio = open(audio_file, "rb")
         transcript = client.audio.transcriptions.create(
@@ -37,7 +36,8 @@ def voice_transcription(audio_file):
         return exc
 
 
-def text_to_speech(text):
+def text_to_speech(text, api_key):
+    client = OpenAI(api_key=api_key)
     response = client.audio.speech.create(
         model="tts-1",
         voice="alloy",
@@ -49,7 +49,8 @@ def text_to_speech(text):
     return f"audio/{random_number}.wav"
 
 
-def image_generation(prompt):
+def image_generation(prompt, api_key):
+    client = OpenAI(api_key=api_key)
     response = client.images.generate(
         model="dall-e-3",
         prompt=prompt,
@@ -65,10 +66,11 @@ def get_audio_file(filename):
     return fastapi.responses.FileResponse(f"static/audio/{filename}.mp3")
 
 
-def customized_response(prompt, history_log, temp=0.05, max_tokens=4000, freq_pen=0.0, presc_pen=0.0, url="tbd"):
+def customized_response(prompt, history_log, api_key, temp=0.05, max_tokens=4000, freq_pen=0.0, presc_pen=0.0, url="tbd"):
     history = json.loads(history_log)
     new_prompt = {"role": "user", "content": prompt}
     history.append(new_prompt)
+    client = OpenAI(api_key=api_key)
     response = client.chat.completions.create(
         model="gpt-4-0125-preview",
         messages=history

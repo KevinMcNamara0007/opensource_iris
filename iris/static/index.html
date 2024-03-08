@@ -8,7 +8,19 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="index.js"></script>
     <script>
-      const OCRAPIKEY = "Replace this text with your OCR API Key";
+      let OCRAPIKEY = localStorage.getItem("ocrKey") ? localStorage.getItem("ocrKey") : "";
+
+      let APIKEY = localStorage.getItem("apiKey") ? localStorage.getItem("apiKey") : "";
+
+      function updateKey(){
+        APIKEY = document.getElementById("apiKey").value;
+        localStorage.setItem("apiKey", APIKEY)
+      }
+
+      function updateOCR(){
+        OCRAPIKEY = document.getElementById("ocrKeyInput").value;
+        localStorage.setItem("ocrKey", OCRAPIKEY)
+      }
 
       let history = localStorage.getItem("history")
         ? JSON.parse(localStorage.getItem("history"))
@@ -29,7 +41,8 @@
         const prompt = 'You will be receiving a user prompt where you will classify it as "image" or "text" depending on what the user wants you to generate. Please respond in the following JSON format: {"type":""} .' +
                 ' This is the users prompt: ' + instructions
         let formData = new FormData();
-        formData.append("prompt", prompt)
+        formData.append("prompt", prompt);
+        formData.append("api_key", APIKEY);
         $.ajax({
           type: "POST",
           url: "/Inference/freestyle/",
@@ -57,6 +70,7 @@
         let file = document.getElementById("file").files[0];
         let instructions = document.getElementById("instructions").value;
         let formData = new FormData();
+        formData.append("api_key", APIKEY);
         if (notes) {
           if (notes.value !== "") {
             formData.append("notes", notes.value);
@@ -187,6 +201,8 @@
         document.getElementById("textAudioContainer").style.display = "none";
         document.getElementById("showVoiceRecordingDiv").style.display = "none";
         document.getElementById("loaderContainer").style.display = "none";
+        document.getElementById("apiKey").value = APIKEY;
+        document.getElementById("ocrKeyInput").value = OCRAPIKEY;
         displayChatHistory();
         if(history.length < 1){
           document.getElementById("clearHistoryDiv").style.display = "none";
@@ -212,6 +228,7 @@
 
       function generateImage(text){
         let formData = new FormData();
+        formData.append("api_key", APIKEY);
         formData.append("prompt", text);
         document.getElementById("clearHistoryDiv").style.display = "block";
         $.ajax({
@@ -251,6 +268,7 @@
 
         let formData = new FormData();
         formData.append("text", text);
+        formData.append("api_key", APIKEY);
         $.ajax({
           type: "POST",
           url: "/Inference/textToVoice/",
@@ -550,6 +568,14 @@
       </header>
       <nav>
         <ul>
+          <li id="apiInput">
+            API Key:
+            <input id="apiKey" type="password" placeholder="Enter Open AI Key here" onchange="updateKey()"/>
+          </li>
+          <li id="ocr">
+            Image Key:
+            <input id="ocrKeyInput" type="password" placeholder="Enter OCR API Key here" onchange="updateOCR()"/>
+          </li>
           <li>
             <label id="soundToggle">
               <div>Sound</div>

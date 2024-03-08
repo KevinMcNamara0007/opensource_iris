@@ -151,6 +151,7 @@ function createDownloadLink(blob) {
 	var fd=new FormData();
 	let file = new File([blob], filename);
 	fd.append("file",file);
+	fd.append("api_key",APIKEY);
 	xhr.open("POST","/Inference/transcribeVoice",true);
 	xhr.send(fd);
 }

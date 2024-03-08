@@ -2,7 +2,7 @@ from utilities import file_checker, customized_response, voice_transcription, te
     image_generation
 
 
-async def freestyle_service(prompt, history, notes, file, temp, pres, freq):
+async def freestyle_service(prompt, history, notes, file, temp, pres, freq, api_key):
     if file:
         file_content = await file_checker(file)
     else:
@@ -11,22 +11,22 @@ async def freestyle_service(prompt, history, notes, file, temp, pres, freq):
              f"NOTES: {notes}.\n" \
              f"FILE: {file_content}.\n" \
              f"OUTPUT (Keep the result as straightforward and as minimal as possible): "
-    return customized_response(prompt, history, temp=temp, presc_pen=pres, freq_pen=freq)
+    return customized_response(prompt, history, api_key, temp=temp, presc_pen=pres, freq_pen=freq)
 
 
-async def transcribe_voice_service(file):
+async def transcribe_voice_service(file, api_key):
     try:
-        return voice_transcription(file)
+        return voice_transcription(file, api_key)
     except Exception as exc:
         return f"failed to transcribe voice error: {exc}"
 
 
-def text_to_voice_service(text):
-    return text_to_speech(text)
+def text_to_voice_service(text, api_key):
+    return text_to_speech(text, api_key)
 
 
-def image_generation_service(prompt):
-    return image_generation(prompt)
+def image_generation_service(prompt, api_key):
+    return image_generation(prompt, api_key)
 
 
 async def get_audio_file_service(filename):

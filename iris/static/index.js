@@ -90,3 +90,10 @@ const audioFrequencyBarEle = `
 </div>
 <canvas id="canvas" style="display: none;"></canvas>
 </div>`;
+
+function removeFile() {
+  const fileEle = document.getElementById("file")
+  fileEle.value = null;
+  let fileName = document.getElementById("fileName");
+  fileName.innerHTML = "";
+}

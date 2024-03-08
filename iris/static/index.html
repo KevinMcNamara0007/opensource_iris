@@ -31,6 +31,7 @@
 
       function evaluatePrompt(){
         document.getElementById("soundWaveContainer").style.display = "none";
+        document.getElementById("guide").style.display = "none";
         displayLoader()
 
         //Disable form elements
@@ -147,9 +148,15 @@
 
       function loadNotes() {
         let notesHTML = document.getElementById("notesContainer");
-        notesHTML.style.display = "block";
-        notesHTML.innerHTML =
+
+        if(notesHTML.style.display === "block") {
+          notesHTML.style.display = "none"
+        }
+        else {
+          notesHTML.innerHTML =
           '<div><label>Notes</label><textarea id="notes"></textarea></div>';
+          notesHTML.style.display = "block";
+        }
       }
       function getImageText() {
         let formData = new FormData();
@@ -194,7 +201,9 @@
         let file = document.getElementById("file").files[0];
         console.log(file);
         let fileName = document.getElementById("fileName");
-        fileName.innerText = "File: " + file.name;
+        fileName.innerHTML = `
+        <div class="fileBox"><span>${file.name}</span><button type="button" onclick="removeFile()">&#215;</button></div>`
+        // fileName.innerText = "File: " + file.name;
       }
       window.onload = function () {
         document.getElementById("stopButton").style.display = "none";
@@ -206,6 +215,7 @@
         displayChatHistory();
         if(history.length < 1){
           document.getElementById("clearHistoryDiv").style.display = "none";
+          document.getElementById("response").innerHTML = guideDiv;
         }
       };
       function showVoiceRecorder() {
@@ -221,7 +231,7 @@
         localStorage.removeItem("history");
         history = [];
         document.getElementById("textAudioContainer").style.display = "none";
-        document.getElementById("response").innerHTML = "";
+        document.getElementById("response").innerHTML = guideDiv;
         document.getElementById("textToAudio").innerHTML = "";
         document.getElementById("clearHistoryDiv").style.display = "none";
       }
@@ -333,6 +343,21 @@
         // Copies the text to clipboard
         navigator.clipboard.writeText(history[index].content);
       }
+
+      const guideDiv = 
+      `<div id="guide">
+        <span>Sample prompts:</span>
+        <div class="example">
+        Generate me an image of a dog holding ice cream cones.
+        <img src="assets/dog.png" alt="dog">
+        </div>
+        <div class="example">
+          Draft a business plan for the Research and Development team for 2024
+          <div>
+          <b>Business Plan for Research and Development Team 2024</b>\n\n1. Executive Summary:\nThe objective for 2024 is to enhance our organization's market position by developing innovative products and improving existing ones, ensuring they are sustainable, cost-effective, and meet consumer needs. We aim for a 15% growth in our product line's market share by Q4 2024.\n\n2. Team Structure and Roles:\n- Head of R&D: Overseeing all R&D activities...\n
+          </div>
+        </div>
+      </div>`
 
     </script>
     <style>
@@ -449,11 +474,8 @@
         height: 200px;
       }
       .fileName {
-        right: 105px;
-        position: relative;
+        margin-top: 10px;
         font-size: 20px;
-        text-align: right;
-        font-weight: 500;
       }
       #showVoiceRecordingDiv {
         padding-top: 20px;
@@ -559,11 +581,12 @@
     <!-- Add your site or application content here -->
     <div class="mainContainer stretchRoot stretch">
       <header>
-        <div class="container">
-          <div class="hero">
-            <h1>Welcome to AI Assistant</h1>
-            <h2>How can I assist you?</h2>
-          </div>
+        <div class="navbar">
+          <div class="brand">AI Assistant</div>
+        </div>
+        <div class="hero">
+          <h1>Welcome to AI Assistant</h1>
+          <h2>How can I assist you?</h2>
         </div>
       </header>
       <nav>
@@ -605,6 +628,7 @@
         </div>
         <div id="loaderContainer" class="loaderDiv"></div>
         <div class="chatIOContainer container stretchChild stretch">
+          <div class="resp chatWindow scrollBar stretchChild" id="response"></div>
           <div class="inputContainer">
             <form id="apiform" onsubmit="addUserInput(this);evaluatePrompt();return false">
               <div id="soundWaveContainer">
@@ -660,9 +684,8 @@
               </div>
               <ol id="recordingsList"></ol>
             </div>
+            <div id="notesContainer"></div>
           </div>
-          <div id="notesContainer"></div>
-          <div class="resp chatWindow scrollBar stretchChild" id="response"></div>
           <div id="audioPopup" style="display: none;">
             <div id="audioLoader">
               <div class="dot-elastic"></div>

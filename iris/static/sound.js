@@ -159,7 +159,7 @@ function handleAudioVolume() {
 function updateAudioControlStyle(str) {
   // const lastChat = document.getElementById("response").lastChild;
   // const control = lastChat.querySelector("#audioControl")
-  const control = document.querySelector("#audioControl")
+  const control = document.querySelector("#audioControls")
   if(str==="off") { //sound currently off
     control.classList.remove("pause")
     control.classList.add("resume")

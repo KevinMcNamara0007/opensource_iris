@@ -151,6 +151,12 @@ nav ul li a {
   align-items: center;
   gap: 8px;
 }
+#aiModel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
 .switch {
   position: relative;
   display: inline-block;
@@ -209,8 +215,64 @@ input:checked + .slider:before {
  font-family: Verdana, sans-serif;
 }
 
-input:checked + .slider:after {  
+input:checked + .slider:after {
   content:'ON';
+  transform: translate(50%,-50%);
+  left: 0%;
+  right: auto;
+}
+/*Model Slider for AI Model */
+.modelSlider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--searchbar-border-color);
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.modelSlider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .modelSlider {
+  background-color: #2ab934;
+}
+
+input:focus + .modelSlider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .modelSlider:before {
+  transform: translateX(28px);
+}
+
+.modelSlider:after {
+  content:'ELF';
+  color: white;
+  display: block;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  top: 50%;
+  right: 0%;
+  font-size: 10px;
+  font-family: Verdana, sans-serif;
+}
+
+input:checked + .modelSlider:after {
+  content:'OAI';
   transform: translate(50%,-50%);
   left: 0%;
   right: auto;
@@ -872,6 +934,14 @@ button#audioControl {
   column-gap: 10px;
 
 }
+.float-right{
+  position: relative !important;
+  float: right !important;
+}
+input[type="password" i]{
+  width: 100px;
+}
+
 /* Media queries*/
 @media (max-width: 1200px) {
   .container {

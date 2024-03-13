@@ -12,6 +12,8 @@
 
       let APIKEY = localStorage.getItem("apiKey") ? localStorage.getItem("apiKey") : "";
 
+      let modelSelecter = "oai";
+
       function updateKey(){
         APIKEY = document.getElementById("apiKey").value;
         localStorage.setItem("apiKey", APIKEY)
@@ -92,9 +94,59 @@
         document.getElementById("notesContainer").style.display = "none";
         document.getElementById("clearHistoryDiv").style.display = "block";
 
+        if(modelSelecter === "oai"){
+          $.ajax({
+            type: "POST",
+            url: "/Inference/freestyle/",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+              //Remove Loader
+              // document.getElementById("loaderContainer").style.display = "none";
+              // document.getElementById("loaderContainer").innerHTML = "";
+              hideLoader()
+              //show Response
+              responseHTML.style.display = "flex";
+
+              //Get Audio For Response
+              getTextToAudio(data);
+
+              let assistantResponse = data.replaceAll(/\\n/g, " ");
+              //Save response history
+              let userObject = { role: "user", content: instructions };
+              let assistantObject = {
+                role: "assistant",
+                content: assistantResponse,
+              };
+              history.push(userObject);
+              history.push(assistantObject);
+              localStorage.setItem("history", JSON.stringify(history));
+
+              //Display Response
+              insertResponseBox(responseHTML, data, history.indexOf(assistantObject))
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+              // document.getElementById("loaderContainer").style.display = "none";
+              hideLoader()
+              alert("OpenAI Failed to load response, try again");
+            },
+          });
+        }else{
+          callELF();
+        }
+      }
+
+      function callELF(){
+        let formData = new FormData();
+        let instructions = document.getElementById("instructions").value;
+
+        formData.append("prompt", instructions);
+
+        let responseHTML = document.getElementById("response");
         $.ajax({
           type: "POST",
-          url: "/Inference/freestyle/",
+          url: "http://127.0.0.1:8000/Inference/ask_an_expert",
           data: formData,
           processData: false,
           contentType: false,
@@ -107,9 +159,9 @@
             responseHTML.style.display = "flex";
 
             //Get Audio For Response
-            getTextToAudio(data);
+            getTextToAudio(data.choices[0].message.content);
 
-            let assistantResponse = data.replaceAll(/\\n/g, " ");
+            let assistantResponse = data.choices[0].message.content.replaceAll(/\\n/g, " ");
             //Save response history
             let userObject = { role: "user", content: instructions };
             let assistantObject = {
@@ -121,12 +173,12 @@
             localStorage.setItem("history", JSON.stringify(history));
 
             //Display Response
-            insertResponseBox(responseHTML, data, history.indexOf(assistantObject))
+            insertResponseBox(responseHTML, data.choices[0].message.content, history.indexOf(assistantObject))
           },
           error: function (xhr, ajaxOptions, thrownError) {
             // document.getElementById("loaderContainer").style.display = "none";
             hideLoader()
-            alert("OpenAI Failed to load response, try again");
+            alert("ELF Failed to load response, make sure elf port is on :8000");
           },
         });
       }
@@ -332,13 +384,24 @@
           let autoPlayBtn = document.getElementById('togBtn')
           if (autoPlayBtn.checked) {
             autoplay = true
-            console.log(true)
           }
           else {
             autoplay = false
-            console.log(false)
           }
       }
+
+      function setModel() {
+        let modelBtn = document.getElementById('togBtn1')
+        if (modelBtn.checked) {
+          modelSelecter = "oai"
+          console.log(modelSelecter)
+        }
+        else {
+          modelSelecter = "elf"
+          console.log(modelSelecter)
+        }
+      }
+
       function copyToClipboard(index) {
         // Copies the text to clipboard
         navigator.clipboard.writeText(history[index].content);
@@ -591,12 +654,12 @@
       </header>
       <nav>
         <ul>
-          <li id="apiInput">
-            API Key:
+          <li class="float-right" id="apiInput">
+            OAI-Key:
             <input id="apiKey" type="password" placeholder="Enter Open AI Key here" onchange="updateKey()"/>
           </li>
-          <li id="ocr">
-            Image Key:
+          <li class="float-right" id="ocr">
+            OCR-Key:
             <input id="ocrKeyInput" type="password" placeholder="Enter OCR API Key here" onchange="updateOCR()"/>
           </li>
           <li>
@@ -605,6 +668,15 @@
               <div class="switch">
                 <input type="checkbox" id="togBtn" checked="checked" onclick="setAutoPlay()">
                 <div class="slider round"></div>
+              </div>
+            </label>
+          </li>
+          <li>
+            <label id="aiModel">
+              <div>Model</div>
+              <div class="switch">
+                <input type="checkbox" id="togBtn1" checked="checked" onclick="setModel()">
+                <div class="modelSlider round"></div>
               </div>
             </label>
           </li>

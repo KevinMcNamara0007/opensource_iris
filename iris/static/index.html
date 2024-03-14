@@ -41,31 +41,60 @@
 
         let instructions = document.getElementById("instructions").value;
 
-        const prompt = 'You will be receiving a user prompt where you will classify it as "image" or "text" depending on what the user wants you to generate. Please respond in the following JSON format: {"type":""} .' +
-                ' This is the users prompt: ' + instructions
+        const prompt = 'Instructions: respond to the user prompt with only the type of response the user is requesting in the following JSON format: {"type":""}. the type can only be "image" or "text".' +
+                'Respond only with the type for this users prompt: ' + instructions
         let formData = new FormData();
         formData.append("prompt", prompt);
         formData.append("api_key", APIKEY);
-        $.ajax({
-          type: "POST",
-          url: "/Inference/freestyle/",
-          data: formData,
-          processData: false,
-          contentType: false,
-          success: function (data) {
-            let response = JSON.parse(data)
-            if(response.type.toLowerCase() === "image"){
-              generateImage(instructions)
-            }else{
-              callAPI()
-            }
-          },
-          error: function (xhr, ajaxOptions, thrownError) {
-            hideLoader()
-            enableElements()
-            alert("OpenAI Failed to load response, try again");
-          },
-        });
+        if(modelSelecter === "oai"){
+          $.ajax({
+            type: "POST",
+            url: "/Inference/freestyle/",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+              let response = JSON.parse(data)
+              if(response.type.toLowerCase() === "image"){
+                generateImage(instructions)
+              }else{
+                callAPI()
+              }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+              hideLoader()
+              enableElements()
+              alert("OpenAI Failed to load response, try again");
+            },
+          });
+        }else{
+          formData.append("temperature", "0.01");
+          $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:8000/Inference/ask_an_expert",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+              try{
+                let response = JSON.parse(data.choices[0].message.content)
+                if(response.type.toLowerCase() === "image"){
+                  generateImage(instructions)
+                }else{
+                  callAPI()
+                }
+              }catch (e){
+                console.log("Failed to classify type using ELF")
+                callAPI()
+              }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+              hideLoader()
+              enableElements()
+              alert("ELF failed to load response");
+            },
+          });
+        }
       }
 
       function callAPI() {

@@ -8,7 +8,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="index.js"></script>
     <script>
-      let OCRAPIKEY = localStorage.getItem("ocrKey") ? localStorage.getItem("ocrKey") : "";
 
       let APIKEY = localStorage.getItem("apiKey") ? localStorage.getItem("apiKey") : "";
 
@@ -17,11 +16,6 @@
       function updateKey(){
         APIKEY = document.getElementById("apiKey").value;
         localStorage.setItem("apiKey", APIKEY)
-      }
-
-      function updateOCR(){
-        OCRAPIKEY = document.getElementById("ocrKeyInput").value;
-        localStorage.setItem("ocrKey", OCRAPIKEY)
       }
 
       let history = localStorage.getItem("history")
@@ -101,7 +95,6 @@
 
       function callAPI() {
         let notes = document.getElementById("notes");
-        let file = document.getElementById("file").files[0];
         let instructions = document.getElementById("instructions").value;
         let formData = new FormData();
         formData.append("api_key", APIKEY);
@@ -109,9 +102,6 @@
           if (notes.value !== "") {
             formData.append("notes", notes.value);
           }
-        }
-        if (file !== undefined) {
-          formData.append("file", file);
         }
         formData.append("history", JSON.stringify(history));
         console.log(formData.get("history"));
@@ -171,7 +161,12 @@
       function callELF(){
         let formData = new FormData();
         let instructions = document.getElementById("instructions").value;
-
+        let notes = document.getElementById("notes");
+        if (notes) {
+          if (notes.value !== "") {
+            instructions = instructions + " /n notes: /n" + notes.value;
+          }
+        }
         formData.append("prompt", instructions);
 
         let responseHTML = document.getElementById("response");
@@ -244,34 +239,35 @@
       function getImageText() {
         let formData = new FormData();
         formData.append("file", $("#image")[0].files[0]);
+        formData.append("api_key", APIKEY)
         $.ajax({
           method: "POST",
-          url: "https://api.ocr.space/parse/image",
-          headers: { apikey: OCRAPIKEY },
+          url: "/Inference/image_text_extraction/",
           data: formData,
           enctype: "multipart/form-data",
           processData: false,
           contentType: false,
           success: function (result) {
+            $("#image").val(null)
             console.log(result);
             let notes = document.getElementById("notes");
-            console.log(result.ParsedResults[0].ParsedText);
-            if (notes) {
+            console.log(result.message.content);
+            if (notes && document.getElementById("notesContainer").style.display !== "none") {
               if (notes.value !== "") {
                 notes = document.getElementById("notes");
                 notes.value =
                   notes.value +
-                  "\nImageText:\n" +
-                  result.ParsedResults[0].ParsedText;
+                  "\nImage Text:\n" +
+                        result.message.content;
               }
               if (notes.value === "") {
                 notes = document.getElementById("notes");
-                notes.value = result.ParsedResults[0].ParsedText;
+                notes.value = result.message.content;
               }
             } else {
               loadNotes();
               notes = document.getElementById("notes");
-              notes.value = result.ParsedResults[0].ParsedText;
+              notes.value = result.message.content;
             }
             alert("Img converted to text, check notes");
           },
@@ -280,21 +276,54 @@
           },
         });
       }
-      function displayFileName() {
+
+      function getFileText() {
+        let formData = new FormData();
         let file = document.getElementById("file").files[0];
-        console.log(file);
-        let fileName = document.getElementById("fileName");
-        fileName.innerHTML = `
-        <div class="fileBox"><span>${file.name}</span><button type="button" onclick="removeFile()">&#215;</button></div>`
-        // fileName.innerText = "File: " + file.name;
+        if (file !== undefined) {
+          formData.append("file", file);
+        }
+        $.ajax({
+          method: "POST",
+          url: "/Inference/file_text_extraction/",
+          data: formData,
+          enctype: "multipart/form-data",
+          processData: false,
+          contentType: false,
+          success: function (result) {
+            $("#file").val(null)
+            let notes = document.getElementById("notes");
+            if (notes && document.getElementById("notesContainer").style.display !== "none") {
+              if (notes.value !== "") {
+                notes = document.getElementById("notes");
+                notes.value =
+                        notes.value +
+                        "\nFile Text:\n" +
+                        result;
+              }
+              if (notes.value === "") {
+                notes = document.getElementById("notes");
+                notes.value = result;
+              }
+            } else {
+              loadNotes();
+              notes = document.getElementById("notes");
+              notes.value = result;
+            }
+            alert("File converted to text, check notes");
+          },
+          error: function ajaxError(jqXHR, textStatus, errorThrown) {
+            alert(jqXHR.responseText);
+          },
+        });
       }
+
       window.onload = function () {
         document.getElementById("stopButton").style.display = "none";
         document.getElementById("textAudioContainer").style.display = "none";
         document.getElementById("showVoiceRecordingDiv").style.display = "none";
         document.getElementById("loaderContainer").style.display = "none";
         document.getElementById("apiKey").value = APIKEY;
-        document.getElementById("ocrKeyInput").value = OCRAPIKEY;
         displayChatHistory();
         if(history.length < 1){
           document.getElementById("clearHistoryDiv").style.display = "none";
@@ -689,10 +718,6 @@
             OAI-Key:
             <input id="apiKey" type="password" placeholder="Enter Open AI Key here" onchange="updateKey()"/>
           </li>
-          <li class="float-right" id="ocr">
-            OCR-Key:
-            <input id="ocrKeyInput" type="password" placeholder="Enter OCR API Key here" onchange="updateOCR()"/>
-          </li>
           <li>
             <label id="soundToggle">
               <div>Sound</div>
@@ -773,14 +798,13 @@
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000" stroke-width="0.00024000000000000003"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.75 3.75H19.5L20.25 4.5V20.25H4.5L3.75 19.5V3.75ZM5.25 5.25V12.9166L7.90909 10.2575L13.3636 15.7121L16.7727 12.303L18.75 14.2802V5.25H5.25ZM18.75 16.4016L16.7727 14.4243L13.3636 17.8334L7.90909 12.3788L5.25 15.0379V18.75H18.75V16.4016ZM14.7273 7.97727C14.0118 7.97727 13.4318 8.55727 13.4318 9.27273C13.4318 9.98819 14.0118 10.5682 14.7273 10.5682C15.4427 10.5682 16.0227 9.98819 16.0227 9.27273C16.0227 8.55727 15.4427 7.97727 14.7273 7.97727ZM11.9318 9.27273C11.9318 7.72884 13.1834 6.47727 14.7273 6.47727C16.2712 6.47727 17.5227 7.72884 17.5227 9.27273C17.5227 10.8166 16.2712 12.0682 14.7273 12.0682C13.1834 12.0682 11.9318 10.8166 11.9318 9.27273Z" fill="#080341"></path> </g></svg>
               </label>
               <label id="fileButton" class="custom-file-upload iconBtn" title="attach file">
-                <input id="file" type="file" onchange="displayFileName()" />
+                <input id="file" type="file" onchange="getFileText()" />
                 <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <defs> <clipPath id="clip-clip"> <rect width="96" height="96"></rect> </clipPath> </defs> <g id="clip" clip-path="url(#clip-clip)"> <g id="pills" transform="translate(-232 -116)"> <g id="Group_151" data-name="Group 151"> <line id="Line_15" data-name="Line 15" y2="49" transform="translate(256 135)" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></line> <line id="Line_16" data-name="Line 16" y2="42" transform="translate(272 135)" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></line> <line id="Line_17" data-name="Line 17" y2="42" transform="translate(288 135)" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></line> <line id="Line_18" data-name="Line 18" y2="49" transform="translate(304 135)" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></line> <path id="Path_182" data-name="Path 182" d="M288,177a8,8,0,0,1-16,0" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></path> <path id="Path_183" data-name="Path 183" d="M256,134.74a16,16,0,0,1,32,0" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></path> <path id="Path_184" data-name="Path 184" d="M304,184.39a24,24,0,0,1-48,0" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></path> </g> </g> </g> </g></svg>
               </label>
               <button id="searchButton" class="searchIcon iconBtn" type="button" title="search" onclick="evaluatePrompt()">
                 <svg width="800px" height="800px" viewBox="0 0 1024 1024" class="icon"  version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M448 768A320 320 0 1 0 448 128a320 320 0 0 0 0 640z m297.344-76.992l214.592 214.592-54.336 54.336-214.592-214.592a384 384 0 1 1 54.336-54.336z" fill="#000000" /></svg>
               </button>
             </form>
-            <div class="fileName" id="fileName"></div>
             <div id="showVoiceRecordingDiv" class="hideBlock">
               <div id="controls">
                 <button onclick="hideVoiceRecorder()">Hide Recordings</button>

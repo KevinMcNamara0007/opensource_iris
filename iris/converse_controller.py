@@ -2,7 +2,7 @@ from fastapi import APIRouter, Form, UploadFile, File
 
 
 from services import freestyle_service, transcribe_voice_service, text_to_voice_service, get_audio_file_service, \
-    image_generation_service
+    image_generation_service, file_to_text, image_to_text_service
 
 router = APIRouter(
     prefix="/Inference",
@@ -63,3 +63,18 @@ def text_to_image(
         api_key: str = Form(description="OPENAI Key")
 ):
     return image_generation_service(prompt, api_key)
+
+
+@router.post("/file_text_extraction", description="Returns text from file")
+async def file_to_text_extraction(
+        file: UploadFile = File(description="The file attached"),
+):
+    return await file_to_text(file)
+
+
+@router.post("/image_text_extraction", description="Returns text from image")
+def file_to_text_extraction(
+        file: UploadFile = File(description="The file attached"),
+        api_key: str = Form(description="OPENAI Key")
+):
+    return image_to_text_service(file, api_key)

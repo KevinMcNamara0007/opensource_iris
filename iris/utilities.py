@@ -9,6 +9,7 @@ import fastapi
 from openai import OpenAI
 import pandas as pd
 from pptx import Presentation
+import base64
 
 accepted_files = {
     "txt": "text",
@@ -77,6 +78,34 @@ def customized_response(prompt, history_log, api_key, temp=0.05, max_tokens=4000
     )
     content = response.choices[0].message.content
     return content
+
+
+def image_to_text(image, api_key):
+    base64_image = encode_image(image)
+    client = OpenAI(api_key=api_key)
+    response = client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": "Extract the text from this image"},
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{base64_image}",
+                        },
+                    },
+                ],
+            }
+        ],
+        max_tokens=500,
+    )
+    return response.choices[0]
+
+
+def encode_image(image):
+    return base64.b64encode(image.file.read()).decode('utf-8')
 
 
 async def file_checker(file):

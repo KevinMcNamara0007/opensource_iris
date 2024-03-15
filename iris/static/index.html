@@ -33,7 +33,9 @@
 
       function evaluatePrompt(){
         document.getElementById("soundWaveContainer").style.display = "none";
-        document.getElementById("guide").style.display = "none";
+        if (document.getElementById("guide")) {
+          document.getElementById("guide").style.display = "none";
+        }
         displayLoader()
 
         //Disable form elements

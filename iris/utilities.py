@@ -89,7 +89,7 @@ def image_to_text(image, api_key):
             {
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": "Extract the text from this image"},
+                    {"type": "text", "text": "Respond with only the text from this image "},
                     {
                         "type": "image_url",
                         "image_url": {

@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8"></head>
     <title>AI Assistant</title>
+    <link rel="shortcut icon" href="#">
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="new_style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -238,43 +239,70 @@
       }
       function getImageText() {
         let formData = new FormData();
-        formData.append("file", $("#image")[0].files[0]);
-        formData.append("api_key", APIKEY)
-        $.ajax({
-          method: "POST",
-          url: "/Inference/image_text_extraction/",
-          data: formData,
-          enctype: "multipart/form-data",
-          processData: false,
-          contentType: false,
-          success: function (result) {
-            $("#image").val(null)
-            console.log(result);
-            let notes = document.getElementById("notes");
-            console.log(result.message.content);
-            if (notes && document.getElementById("notesContainer").style.display !== "none") {
-              if (notes.value !== "") {
-                notes = document.getElementById("notes");
-                notes.value =
-                  notes.value +
-                  "\nImage Text:\n" +
-                        result.message.content;
+        if(modelSelecter === "oai"){
+          formData.append("file", $("#image")[0].files[0]);
+          formData.append("api_key", APIKEY)
+          $.ajax({
+            method: "POST",
+            url: "/Inference/image_text_extraction",
+            data: formData,
+            enctype: "multipart/form-data",
+            processData: false,
+            contentType: false,
+            success: function (result) {
+              displayImageText(result.message.content)
+            },
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+              displayImageText("---")
+              alert("OpenAI Could Not Extract Image Text, please try again");
+            },
+          });
+        }else{
+          formData.append("image", $("#image")[0].files[0]);
+          $.ajax({
+            method: "POST",
+            url: "http://127.0.0.1:8000/Images/text_extraction",
+            data: formData,
+            enctype: "multipart/form-data",
+            processData: false,
+            contentType: false,
+            success: function (result) {
+              if(result !== null){
+                displayImageText(result);
+              }else{
+                modelSelecter = "oai";
+                getImageText()
               }
-              if (notes.value === "") {
-                notes = document.getElementById("notes");
-                notes.value = result.message.content;
-              }
-            } else {
-              loadNotes();
-              notes = document.getElementById("notes");
-              notes.value = result.message.content;
-            }
-            alert("Img converted to text, check notes");
-          },
-          error: function ajaxError(jqXHR, textStatus, errorThrown) {
-            alert(jqXHR.responseText);
-          },
-        });
+            },
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+              alert("ELF Could Not Extract Image Text, trying on OAI");
+              modelSelecter = "oai";
+              getImageText();
+            },
+          });
+        }
+      }
+
+      function displayImageText(text){
+        $("#image").val(null)
+        let notes = document.getElementById("notes");
+        if (notes && document.getElementById("notesContainer").style.display !== "none") {
+          if (notes.value !== "") {
+            notes = document.getElementById("notes");
+            notes.value =
+                    notes.value +
+                    "\nImage Text:\n" +
+                    text;
+          }
+          if (notes.value === "") {
+            notes = document.getElementById("notes");
+            notes.value = text;
+          }
+        } else {
+          loadNotes();
+          notes = document.getElementById("notes");
+          notes.value = text;
+        }
       }
 
       function getFileText() {

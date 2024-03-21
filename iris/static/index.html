@@ -205,7 +205,6 @@
           error: function (xhr, ajaxOptions, thrownError) {
             // document.getElementById("loaderContainer").style.display = "none";
             hideLoader()
-            alert("ELF Failed to load response, make sure elf port is on :8000");
           },
         });
       }
@@ -238,6 +237,7 @@
         }
       }
       function getImageText() {
+        displayLoader()
         let formData = new FormData();
         if(modelSelecter === "oai"){
           formData.append("file", $("#image")[0].files[0]);
@@ -253,6 +253,7 @@
               displayImageText(result.message.content)
             },
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
+              hideLoader()
               displayImageText("---")
               alert("OpenAI Could Not Extract Image Text, please try again");
             },
@@ -270,12 +271,13 @@
               if(result !== null){
                 displayImageText(result);
               }else{
+                hideLoader()
                 modelSelecter = "oai";
                 getImageText()
               }
             },
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
-              alert("ELF Could Not Extract Image Text, trying on OAI");
+              hideLoader()
               modelSelecter = "oai";
               getImageText();
             },
@@ -284,6 +286,7 @@
       }
 
       function displayImageText(text){
+        hideLoader()
         $("#image").val(null)
         let notes = document.getElementById("notes");
         if (notes && document.getElementById("notesContainer").style.display !== "none") {
@@ -311,6 +314,7 @@
         if (file !== undefined) {
           formData.append("file", file);
         }
+        displayLoader()
         $.ajax({
           method: "POST",
           url: "/Inference/file_text_extraction/",
@@ -338,10 +342,12 @@
               notes = document.getElementById("notes");
               notes.value = result;
             }
+            hideLoader()
             alert("File converted to text, check notes");
           },
           error: function ajaxError(jqXHR, textStatus, errorThrown) {
-            alert(jqXHR.responseText);
+            hideLoader()
+            alert("Failed to get File Text");
           },
         });
       }

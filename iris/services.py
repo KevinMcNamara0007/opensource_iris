@@ -10,7 +10,7 @@ async def freestyle_service(prompt, history, notes, file, temp, pres, freq, api_
     prompt = f"INSTRUCTIONS: {prompt}.\n" \
              f"NOTES: {notes}.\n" \
              f"FILE: {file_content}.\n" \
-             f"OUTPUT (Keep the result as straightforward and as minimal as possible): "
+             f"OUTPUT: "
     return customized_response(prompt, history, api_key, temp=temp, presc_pen=pres, freq_pen=freq)
 
 

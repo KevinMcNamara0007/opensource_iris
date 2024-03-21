@@ -89,7 +89,6 @@ def image_to_text(image, api_key):
             {
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": "Respond with only the text from this image "},
                     {
                         "type": "image_url",
                         "image_url": {
@@ -99,7 +98,7 @@ def image_to_text(image, api_key):
                 ],
             }
         ],
-        max_tokens=500,
+        max_tokens=2000,
     )
     return response.choices[0]
 

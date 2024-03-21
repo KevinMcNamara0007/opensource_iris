@@ -272,14 +272,12 @@
                 displayImageText(result);
               }else{
                 hideLoader()
-                modelSelecter = "oai";
-                getImageText()
+                alert("Elf Failed to extract image text")
               }
             },
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
               hideLoader()
-              modelSelecter = "oai";
-              getImageText();
+              alert("Elf Failed to extract image text")
             },
           });
         }

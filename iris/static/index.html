@@ -237,50 +237,103 @@
         }
       }
       function getImageText() {
+        let instructions = document.getElementById("instructions");
+        if(modelSelecter === "oai"){
+          if(instructions.value){
+            //UE functions
+            document.getElementById("soundWaveContainer").style.display = "none";
+            if (document.getElementById("guide")) {
+              document.getElementById("guide").style.display = "none";
+            }
+            document.getElementById("textAudioContainer").style.display = "none";
+            document.getElementById("soundWaveContainer").style.display = "none";
+            //remove notes
+            document.getElementById("notesContainer").style.display = "none";
+            document.getElementById("clearHistoryDiv").style.display = "block";
+            disableElements()
+
+            addUserInputText(instructions.value)
+            displayLoader()
+            let formData = new FormData();
+            formData.append("prompt", instructions.value);
+            formData.append("file", $("#image")[0].files[0]);
+            formData.append("api_key", APIKEY);
+            $.ajax({
+              method: "POST",
+              url: "/Inference/image_text_extraction",
+              data: formData,
+              enctype: "multipart/form-data",
+              processData: false,
+              contentType: false,
+              success: function (result) {
+                hideLoader();
+                enableElements();
+                let responseHTML = document.getElementById("response");
+                //show Response
+                responseHTML.style.display = "flex";
+
+                //Get Audio For Response
+                getTextToAudio(result.message.content);
+
+                let assistantResponse = result.message.content.replaceAll(/\\n/g, " ");
+                //Save response history
+                let userObject = { role: "user", content: instructions };
+                let assistantObject = {
+                  role: "assistant",
+                  content: assistantResponse,
+                };
+                history.push(userObject);
+                history.push(assistantObject);
+                localStorage.setItem("history", JSON.stringify(history));
+
+                //Display Response
+                insertResponseBox(responseHTML, result.message.content, history.indexOf(assistantObject))
+                $("#image").val(null)
+              },
+              error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                hideLoader()
+                enableElements();
+                $("#image").val(null)
+                alert("OpenAI could not process your request, please try a different prompt and add your image again");
+              },
+            });
+          }else{
+            alert("Please make sure to include a prompt for your image")
+          }
+        }else{
+          elfImageExtractor()
+        }
+      }
+
+      function elfImageExtractor(){
+        if (document.getElementById("guide")) {
+          document.getElementById("guide").style.display = "none";
+        }
         displayLoader()
         let formData = new FormData();
-        if(modelSelecter === "oai"){
-          formData.append("file", $("#image")[0].files[0]);
-          formData.append("api_key", APIKEY)
-          $.ajax({
-            method: "POST",
-            url: "/Inference/image_text_extraction",
-            data: formData,
-            enctype: "multipart/form-data",
-            processData: false,
-            contentType: false,
-            success: function (result) {
-              displayImageText(result.message.content)
-            },
-            error: function ajaxError(jqXHR, textStatus, errorThrown) {
-              hideLoader()
-              displayImageText("---")
-              alert("OpenAI Could Not Extract Image Text, please try again");
-            },
-          });
-        }else{
-          formData.append("image", $("#image")[0].files[0]);
-          $.ajax({
-            method: "POST",
-            url: "http://127.0.0.1:8000/Images/text_extraction",
-            data: formData,
-            enctype: "multipart/form-data",
-            processData: false,
-            contentType: false,
-            success: function (result) {
-              if(result !== null){
-                displayImageText(result);
-              }else{
-                hideLoader()
-                alert("Elf Failed to extract image text")
-              }
-            },
-            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+        formData.append("image", $("#image")[0].files[0]);
+        $.ajax({
+          method: "POST",
+          url: "http://127.0.0.1:8000/Images/text_extraction",
+          data: formData,
+          enctype: "multipart/form-data",
+          processData: false,
+          contentType: false,
+          success: function (result) {
+            if(result !== null){
+              displayImageText(result);
+            }else{
+              $("#image").val(null)
               hideLoader()
               alert("Elf Failed to extract image text")
-            },
-          });
-        }
+            }
+          },
+          error: function ajaxError(jqXHR, textStatus, errorThrown) {
+            $("#image").val(null)
+            hideLoader()
+            alert("Elf Failed to extract image text")
+          }
+        });
       }
 
       function displayImageText(text){
@@ -311,6 +364,9 @@
         let file = document.getElementById("file").files[0];
         if (file !== undefined) {
           formData.append("file", file);
+        }
+        if (document.getElementById("guide")) {
+          document.getElementById("guide").style.display = "none";
         }
         displayLoader()
         $.ajax({

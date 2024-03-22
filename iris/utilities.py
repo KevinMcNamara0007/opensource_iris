@@ -80,7 +80,7 @@ def customized_response(prompt, history_log, api_key, temp=0.05, max_tokens=4000
     return content
 
 
-def image_to_text(image, api_key):
+def image_to_text(prompt, image, api_key):
     base64_image = encode_image(image)
     client = OpenAI(api_key=api_key)
     response = client.chat.completions.create(
@@ -89,6 +89,7 @@ def image_to_text(image, api_key):
             {
                 "role": "user",
                 "content": [
+                    {"type": "text", "text": prompt},
                     {
                         "type": "image_url",
                         "image_url": {

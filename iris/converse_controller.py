@@ -74,7 +74,8 @@ async def file_to_text_extraction(
 
 @router.post("/image_text_extraction", description="Returns text from image")
 def file_to_text_extraction(
+        prompt: str = Form(description="Prompt for the image"),
         file: UploadFile = File(description="The file attached"),
         api_key: str = Form(description="OPENAI Key")
 ):
-    return image_to_text_service(file, api_key)
+    return image_to_text_service(prompt, file, api_key)

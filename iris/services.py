@@ -41,5 +41,5 @@ async def get_audio_file_service(filename):
     return get_audio_file(filename)
 
 
-def image_to_text_service(image, api_key):
-    return image_to_text(image, api_key)
+def image_to_text_service(prompt, image, api_key):
+    return image_to_text(prompt, image, api_key)

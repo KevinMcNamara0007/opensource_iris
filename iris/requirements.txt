@@ -14,3 +14,4 @@ starlette
 python-multipart
 docx
 jinja2
+tiktoken

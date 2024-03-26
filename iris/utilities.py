@@ -10,6 +10,7 @@ from openai import OpenAI
 import pandas as pd
 from pptx import Presentation
 import base64
+import tiktoken
 
 accepted_files = {
     "txt": "text",
@@ -183,3 +184,22 @@ def custom_ppt_reader(file, ppt_file_extension, ppt_file_content):
                     content += f"{shape.text.strip()}\n"
     os.remove(f"{ppt_id}.{ppt_file_extension}")
     return content
+
+
+def history_maintenance(history, api_key):
+    tokens = check_token_count(history)
+    print(tokens)
+    if tokens > 2000:
+        prompt = (f"Instructions: Respond only with the same JSON formatting of the history. rephrase the content of each assistant response more"
+                  f"concise and"
+                  f"compressed. History: {history}")
+        return customized_response(prompt, "[]", api_key)
+    return None
+
+
+def check_token_count(history):
+    encoding = tiktoken.encoding_for_model("gpt-4-0125-preview")
+    num_tokens = len(encoding.encode(history))
+    return num_tokens
+
+

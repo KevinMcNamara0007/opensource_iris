@@ -2,7 +2,7 @@ from fastapi import APIRouter, Form, UploadFile, File
 
 
 from services import freestyle_service, transcribe_voice_service, text_to_voice_service, get_audio_file_service, \
-    image_generation_service, file_to_text, image_to_text_service
+    image_generation_service, file_to_text, image_to_text_service, history_management_service
 
 router = APIRouter(
     prefix="/Inference",
@@ -79,3 +79,11 @@ def file_to_text_extraction(
         api_key: str = Form(description="OPENAI Key")
 ):
     return image_to_text_service(prompt, file, api_key)
+
+
+@router.post("/history_management", description="compresses history")
+def history_management(
+        history: str = Form(description="History"),
+        api_key: str = Form(description="OPENAI Key")
+):
+    return history_management_service(history, api_key)

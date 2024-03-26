@@ -1,5 +1,5 @@
 from utilities import file_checker, customized_response, voice_transcription, text_to_speech, get_audio_file, \
-    image_generation, image_to_text
+    image_generation, image_to_text, history_maintenance
 
 
 async def freestyle_service(prompt, history, notes, file, temp, pres, freq, api_key):
@@ -43,3 +43,7 @@ async def get_audio_file_service(filename):
 
 def image_to_text_service(prompt, image, api_key):
     return image_to_text(prompt, image, api_key)
+
+
+def history_management_service(history_log, api_key):
+    return history_maintenance(history_log, api_key)

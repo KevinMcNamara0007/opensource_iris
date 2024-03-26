@@ -48,6 +48,7 @@
         let formData = new FormData();
         formData.append("prompt", prompt);
         formData.append("api_key", APIKEY);
+        formData.append("messages", "[]");
         if(modelSelecter === "oai"){
           $.ajax({
             type: "POST",
@@ -177,6 +178,7 @@
           }
         }
         formData.append("prompt", instructions);
+        formData.append("messages", JSON.stringify(compressedHist));
 
         let responseHTML = document.getElementById("response");
         $.ajax({
@@ -555,6 +557,7 @@
         $('#searchButton').removeClass('disabled');
         $('#imageButton').removeClass('disabled');
         $('#fileButton').removeClass('disabled');
+        $('#instructions').val("");
       }
 
       function disableElements(){

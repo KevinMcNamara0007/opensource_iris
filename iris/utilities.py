@@ -40,6 +40,8 @@ def voice_transcription(audio_file, api_key):
 
 def text_to_speech(text, api_key):
     client = OpenAI(api_key=api_key)
+    if len(text) > 4096:
+        text = text[0:4096]
     response = client.audio.speech.create(
         model="tts-1",
         voice="alloy",
@@ -188,8 +190,9 @@ def custom_ppt_reader(file, ppt_file_extension, ppt_file_content):
 
 def history_maintenance(history, api_key):
     tokens = check_token_count(history)
+    print("History Token Count: ")
     print(tokens)
-    if tokens > 2000:
+    if tokens > 1000:
         prompt = (f"Instructions: Respond only with the same JSON formatting of the history. rephrase the content of each assistant response more"
                   f"concise and"
                   f"compressed. History: {history}")

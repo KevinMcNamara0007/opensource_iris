@@ -33,6 +33,8 @@
 
       function evaluatePrompt(){
         document.getElementById("soundWaveContainer").style.display = "none";
+        getFillerVoice();
+        let instructions = document.getElementById("instructions").value;
         if (document.getElementById("guide")) {
           document.getElementById("guide").style.display = "none";
         }
@@ -42,7 +44,6 @@
         disableElements()
 
 
-        let instructions = document.getElementById("instructions").value;
         let promptLowerCase = instructions.toLowerCase();
         const wordsToCheck = ["image", "picture", "design", "generate"];
         if(wordsToCheck.some(imageWord => promptLowerCase.includes(imageWord))){
@@ -300,6 +301,19 @@
         }else{
           elfImageExtractor()
         }
+      }
+
+      function getFillerVoice(){
+              document.getElementById("soundWaveContainer").style.display = "flex";
+              const audioPopup = document.getElementById("audioPopup")
+              const audioLoader = document.getElementById("audioLoader")
+              const audioBar = document.getElementById("audioFrequencyBar")
+              audioPopup.style.display = "flex"
+              audioLoader.style.display = "block"
+              audioBar.style.display = "none"
+              let audio = document.getElementById("textToAudio");
+              let randomNum = Math.floor(Math.random() * (12 - 1 + 1)) + 1;
+              showAudioFrequencyBar(autoplay, "audio/filler" + randomNum + ".wav")
       }
 
       function elfImageExtractor(){

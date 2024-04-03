@@ -304,14 +304,14 @@
       }
 
       function getFillerVoice(){
-              document.getElementById("soundWaveContainer").style.display = "flex";
-              const audioPopup = document.getElementById("audioPopup")
-              const audioLoader = document.getElementById("audioLoader")
-              const audioBar = document.getElementById("audioFrequencyBar")
-              audioPopup.style.display = "flex"
-              audioLoader.style.display = "block"
-              audioBar.style.display = "none"
-              let audio = document.getElementById("textToAudio");
+              // document.getElementById("soundWaveContainer").style.display = "flex";
+              // const audioPopup = document.getElementById("audioPopup")
+              // const audioLoader = document.getElementById("audioLoader")
+              // const audioBar = document.getElementById("audioFrequencyBar")
+              // audioPopup.style.display = "flex"
+              // audioLoader.style.display = "block"
+              // audioBar.style.display = "none"
+              // let audio = document.getElementById("textToAudio");
               let randomNum = Math.floor(Math.random() * (11 - 1 + 1)) + 1;
               showAudioFrequencyBar(autoplay, "audio/filler" + randomNum + ".wav")
       }

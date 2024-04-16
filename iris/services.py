@@ -80,7 +80,7 @@ async def file_to_text(file, rag_toggle, api_key):
                 files = load_pickle()
                 files.update({unique_id: {
                     "title": file_object["title"],
-                    "content": file_object["content"],
+                    "content": file_content,
                     "content_embeddings": embedded_content,
                     "title_embeddings": embedded_title
                 }})

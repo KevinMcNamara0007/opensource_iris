@@ -13,6 +13,7 @@
       let APIKEY = localStorage.getItem("apiKey") ? localStorage.getItem("apiKey") : "";
 
       let modelSelecter = "oai";
+      let rag = "y";
 
       function updateKey(){
         APIKEY = document.getElementById("apiKey").value;
@@ -50,9 +51,54 @@
           console.log("generating Image")
           generateImage(instructions)
         }else{
-          console.log("no image key word detected")
-          callAPI()
+          if(rag === "y"){
+            semanticSearch()
+          }else{
+            console.log("no image or rag key word detected")
+            callAPI()
+          }
         }
+      }
+
+      function semanticSearch(){
+        let formData = new FormData();
+        let instructions = document.getElementById("instructions").value;
+        formData.append("query", instructions)
+        $.ajax({
+          type: "POST",
+          url: "/Inference/semantic_search",
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (data) {
+            console.log(data)
+            let notes = document.getElementById("notes");
+            if (notes && document.getElementById("notesContainer").style.display !== "none") {
+              if (notes.value !== "") {
+                notes = document.getElementById("notes");
+                data.forEach((item, index)=>{
+                  notes.value = notes.value + "\n" + "File Text " + index + ": " + item.content
+                })
+              }
+              if (notes.value === "") {
+                notes = document.getElementById("notes");
+                data.forEach((item, index)=>{
+                  notes.value = "\n" + "File Text " + index + ": " + item.content
+                })
+              }
+            } else {
+              loadNotes();
+              notes = document.getElementById("notes");
+              data.forEach((item, index)=>{
+                notes.value = "\n" + "File Text " + index + ": " + item.content
+              })
+            }
+            callAPI()
+          },
+          error: function (xhr, ajaxOptions, thrownError) {
+            callAPI()
+          },
+        });
       }
 
       function callAPI() {
@@ -86,6 +132,7 @@
             processData: false,
             contentType: false,
             success: function (data) {
+              notes.value = "";
               //Remove Loader
               // document.getElementById("loaderContainer").style.display = "none";
               // document.getElementById("loaderContainer").innerHTML = "";
@@ -143,6 +190,7 @@
           processData: false,
           contentType: false,
           success: function (data) {
+            notes.value = "";
             //Remove Loader
             // document.getElementById("loaderContainer").style.display = "none";
             // document.getElementById("loaderContainer").innerHTML = "";
@@ -370,6 +418,42 @@
         }
       }
 
+      function checkForRag(){
+        if(rag === 'y'){
+          let formData = new FormData();
+          let file = document.getElementById("file").files[0];
+          if (file !== undefined) {
+            formData.append("file", file);
+            formData.append("api_key", APIKEY);
+            formData.append("rag", "y");
+          }
+          if (document.getElementById("guide")) {
+            document.getElementById("guide").style.display = "none";
+          }
+          displayLoader()
+          $.ajax({
+            method: "POST",
+            url: "/Inference/file_text_extraction",
+            data: formData,
+            enctype: "multipart/form-data",
+            processData: false,
+            contentType: false,
+            success: function (result) {
+              $("#file").val(null)
+              hideLoader()
+              alert("Successfully added file permanently, ready to query against")
+            },
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+              hideLoader()
+              $("#file").val(null)
+              alert("Failed to Permanently add file, try again");
+            },
+          });
+        }else{
+          getFileText()
+        }
+      }
+
       function getFileText() {
         let formData = new FormData();
         let file = document.getElementById("file").files[0];
@@ -561,6 +645,18 @@
         else {
           modelSelecter = "elf"
           console.log(modelSelecter)
+        }
+      }
+
+      function setRag(){
+        let ragBtn = document.getElementById('togBtn2')
+        if (ragBtn.checked) {
+          rag = "y"
+          console.log(rag)
+        }
+        else {
+          rag = "n"
+          console.log(rag)
         }
       }
 
@@ -838,6 +934,15 @@
               </div>
             </label>
           </li>
+          <li>
+            <label id="ragToggle">
+              <div>RAG</div>
+              <div class="switch">
+                <input type="checkbox" id="togBtn2" checked="checked" onclick="setRag()">
+                <div class="slider round"></div>
+              </div>
+            </label>
+          </li>
           <li id="clearHistoryDiv">
             <button type="button" class="clearButton" onclick="clearChatHistory()">
               Clear Chat History
@@ -900,7 +1005,7 @@
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000" stroke-width="0.00024000000000000003"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.75 3.75H19.5L20.25 4.5V20.25H4.5L3.75 19.5V3.75ZM5.25 5.25V12.9166L7.90909 10.2575L13.3636 15.7121L16.7727 12.303L18.75 14.2802V5.25H5.25ZM18.75 16.4016L16.7727 14.4243L13.3636 17.8334L7.90909 12.3788L5.25 15.0379V18.75H18.75V16.4016ZM14.7273 7.97727C14.0118 7.97727 13.4318 8.55727 13.4318 9.27273C13.4318 9.98819 14.0118 10.5682 14.7273 10.5682C15.4427 10.5682 16.0227 9.98819 16.0227 9.27273C16.0227 8.55727 15.4427 7.97727 14.7273 7.97727ZM11.9318 9.27273C11.9318 7.72884 13.1834 6.47727 14.7273 6.47727C16.2712 6.47727 17.5227 7.72884 17.5227 9.27273C17.5227 10.8166 16.2712 12.0682 14.7273 12.0682C13.1834 12.0682 11.9318 10.8166 11.9318 9.27273Z" fill="#080341"></path> </g></svg>
               </label>
               <label id="fileButton" class="custom-file-upload iconBtn" title="attach file">
-                <input id="file" type="file" onchange="getFileText()" />
+                <input id="file" type="file" onchange="checkForRag()" />
                 <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <defs> <clipPath id="clip-clip"> <rect width="96" height="96"></rect> </clipPath> </defs> <g id="clip" clip-path="url(#clip-clip)"> <g id="pills" transform="translate(-232 -116)"> <g id="Group_151" data-name="Group 151"> <line id="Line_15" data-name="Line 15" y2="49" transform="translate(256 135)" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></line> <line id="Line_16" data-name="Line 16" y2="42" transform="translate(272 135)" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></line> <line id="Line_17" data-name="Line 17" y2="42" transform="translate(288 135)" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></line> <line id="Line_18" data-name="Line 18" y2="49" transform="translate(304 135)" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></line> <path id="Path_182" data-name="Path 182" d="M288,177a8,8,0,0,1-16,0" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></path> <path id="Path_183" data-name="Path 183" d="M256,134.74a16,16,0,0,1,32,0" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></path> <path id="Path_184" data-name="Path 184" d="M304,184.39a24,24,0,0,1-48,0" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></path> </g> </g> </g> </g></svg>
               </label>
               <button id="searchButton" class="searchIcon iconBtn" type="button" title="search" onclick="evaluatePrompt()">

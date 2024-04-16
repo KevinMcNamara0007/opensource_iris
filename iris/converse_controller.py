@@ -2,7 +2,8 @@ from fastapi import APIRouter, Form, UploadFile, File
 
 
 from services import freestyle_service, transcribe_voice_service, text_to_voice_service, get_audio_file_service, \
-    image_generation_service, file_to_text, image_to_text_service, history_management_service
+    image_generation_service, file_to_text, image_to_text_service, history_management_service, get_all_files, \
+    file_semantic_search
 
 router = APIRouter(
     prefix="/Inference",
@@ -68,8 +69,10 @@ def text_to_image(
 @router.post("/file_text_extraction", description="Returns text from file")
 async def file_to_text_extraction(
         file: UploadFile = File(description="The file attached"),
+        api_key: str = Form(default=None, description="OpenAI key"),
+        rag: str = Form(default="n", description="Permanent save? Y or N")
 ):
-    return await file_to_text(file)
+    return await file_to_text(file,rag, api_key)
 
 
 @router.post("/image_text_extraction", description="Returns text from image")
@@ -87,3 +90,15 @@ def history_management(
         api_key: str = Form(description="OPENAI Key")
 ):
     return history_management_service(history, api_key)
+
+
+@router.get("/get_all_files", description="Get all files from files.pickle")
+def get_files():
+    return get_all_files()
+
+
+@router.post("/semantic_search", description="Find file based on prompt")
+def semantic_search(
+        query: str = Form(description="Query"),
+):
+    return file_semantic_search(query)

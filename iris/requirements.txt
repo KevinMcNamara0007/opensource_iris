@@ -17,3 +17,4 @@ jinja2
 tiktoken
 sentence_transformers
 torch
+openpyxl

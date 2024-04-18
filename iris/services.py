@@ -27,38 +27,42 @@ def file_semantic_search(query):
     refs = dict()
     # Load all file data
     files = load_pickle()
-    # Embedd Query
-    query_embedding = embedd(query)
+    try:
+        # Embedd Query
+        query_embedding = embedd(query)
 
-    key_title_content = []
-    # have an array of title and content embeddings
-    for key, value in files.items():
-        key_title_content.append([key, value["title_embeddings"], value["content_embeddings"]])
-    # Title Embedding Corpus
-    title_embeddings = torch.stack([x[1] for x in key_title_content])
-    # Content Embedding Corpus
-    content_embeddings = torch.stack([x[2] for x in key_title_content])
-    # Semantic Search for top 2 of Title Embeddings > 50% add to matches
-    matches = [hit for hit in semantic_search(query_embedding, title_embeddings, 2) if hit['score'] >= .15]
-    # Semantic Search for top 2 of Content Embeddings > 40% add to matches
-    matches.extend([hit for hit in semantic_search(query_embedding, content_embeddings, 2) if hit['score'] >= .15])
-    #  Insert Matches into a dictionary using corpus_id as key and score as value
-    for match in matches:
-        corp_id = match.get('corpus_id', "not found")
-        score = match.get('score', 0)
-        refs.update({corp_id: refs.get(corp_id) if score < refs.get(corp_id, 0) else score})
-    # Sort the entries based on score from highest to smallest and get top 2
-    hits = sorted(refs.items(), key=lambda x: x[1], reverse=True)[:2]
-    print(hits)
-    # return references to user
-    references = []
-    for hit in hits:
-        file = files.get(key_title_content[hit[0]][0])
-        references.append({
-            "title": file["title"],
-            "content": file["content"]
-        })
-    return references
+        key_title_content = []
+        # have an array of title and content embeddings
+        for key, value in files.items():
+            key_title_content.append([key, value["title_embeddings"], value["content_embeddings"]])
+        # Title Embedding Corpus
+        title_embeddings = torch.stack([x[1] for x in key_title_content])
+        # Content Embedding Corpus
+        content_embeddings = torch.stack([x[2] for x in key_title_content])
+        # Semantic Search for top 2 of Title Embeddings > 50% add to matches
+        matches = [hit for hit in semantic_search(query_embedding, title_embeddings, 2) if hit['score'] >= .15]
+        # Semantic Search for top 2 of Content Embeddings > 40% add to matches
+        matches.extend([hit for hit in semantic_search(query_embedding, content_embeddings, 2) if hit['score'] >= .15])
+        #  Insert Matches into a dictionary using corpus_id as key and score as value
+        for match in matches:
+            corp_id = match.get('corpus_id', "not found")
+            score = match.get('score', 0)
+            refs.update({corp_id: refs.get(corp_id) if score < refs.get(corp_id, 0) else score})
+        # Sort the entries based on score from highest to smallest and get top 2
+        hits = sorted(refs.items(), key=lambda x: x[1], reverse=True)[:2]
+        print(hits)
+        # return references to user
+        references = []
+        for hit in hits:
+            file = files.get(key_title_content[hit[0]][0])
+            references.append({
+                "title": file["title"],
+                "content": file["content"]
+            })
+        return references
+    except Exception as exc:
+        print(exc)
+        return exc
 
 
 async def file_to_text(file, rag_toggle, api_key):

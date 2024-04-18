@@ -940,6 +940,11 @@ button#audioControl {
   column-gap: 10px;
 
 }
+li.menuRight{
+  right: 0 !important;
+  position: relative !important;
+  float: right !important;
+}
 .float-right{
   position: relative !important;
   float: right !important;

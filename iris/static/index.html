@@ -455,6 +455,19 @@
         });
       }
 
+      function deleteAllFiles(){
+        $.ajax({
+          method: "GET",
+          url: "/Inference/reset_rag_data",
+          processData: false,
+          contentType: false,
+          success: function (result) {
+            alert("All Files have been deleted")
+          },error: function ajaxError(jqXHR, textStatus, errorThrown) {
+
+          }
+        })
+      }
       function getFileText() {
         document.getElementById("myPopup").style.display = "none";
         let formData = new FormData();
@@ -740,6 +753,11 @@
           <li id="clearHistoryDiv">
             <button type="button" class="clearButton" onclick="clearChatHistory()">
               Clear Chat History
+            </button>
+          </li>
+          <li class="menuRight">
+            <button type="button" class="clearButton" onclick="deleteAllFiles()">
+              Delete All Permanent Files
             </button>
           </li>
         </ul>

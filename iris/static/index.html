@@ -132,7 +132,9 @@
             processData: false,
             contentType: false,
             success: function (data) {
-              notes.value = "";
+              if(notes){
+                notes.value = "";
+              }
               //Remove Loader
               // document.getElementById("loaderContainer").style.display = "none";
               // document.getElementById("loaderContainer").innerHTML = "";
@@ -190,7 +192,9 @@
           processData: false,
           contentType: false,
           success: function (data) {
-            notes.value = "";
+            if(notes){
+              notes.value = "";
+            }
             //Remove Loader
             // document.getElementById("loaderContainer").style.display = "none";
             // document.getElementById("loaderContainer").innerHTML = "";
@@ -418,43 +422,41 @@
         }
       }
 
-      function checkForRag(){
-        if(rag === 'y'){
-          let formData = new FormData();
-          let file = document.getElementById("file").files[0];
-          if (file !== undefined) {
-            formData.append("file", file);
-            formData.append("api_key", APIKEY);
-            formData.append("rag", "y");
-          }
-          if (document.getElementById("guide")) {
-            document.getElementById("guide").style.display = "none";
-          }
-          displayLoader()
-          $.ajax({
-            method: "POST",
-            url: "/Inference/file_text_extraction",
-            data: formData,
-            enctype: "multipart/form-data",
-            processData: false,
-            contentType: false,
-            success: function (result) {
-              $("#file").val(null)
-              hideLoader()
-              alert("Successfully added file permanently, ready to query against")
-            },
-            error: function ajaxError(jqXHR, textStatus, errorThrown) {
-              hideLoader()
-              $("#file").val(null)
-              alert("Failed to Permanently add file, try again");
-            },
-          });
-        }else{
-          getFileText()
+      function ragExtract(){
+        document.getElementById("myPopup").style.display = "none";
+        let formData = new FormData();
+        let file = document.getElementById("file").files[0];
+        if (file !== undefined) {
+          formData.append("file", file);
+          formData.append("api_key", APIKEY);
+          formData.append("rag", "y");
         }
+        if (document.getElementById("guide")) {
+          document.getElementById("guide").style.display = "none";
+        }
+        displayLoader()
+        $.ajax({
+          method: "POST",
+          url: "/Inference/file_text_extraction",
+          data: formData,
+          enctype: "multipart/form-data",
+          processData: false,
+          contentType: false,
+          success: function (result) {
+            $("#file").val(null)
+            hideLoader()
+            alert("Successfully added file permanently, ready to query against")
+          },
+          error: function ajaxError(jqXHR, textStatus, errorThrown) {
+            hideLoader()
+            $("#file").val(null)
+            alert("Failed to Permanently add file, try again");
+          },
+        });
       }
 
       function getFileText() {
+        document.getElementById("myPopup").style.display = "none";
         let formData = new FormData();
         let file = document.getElementById("file").files[0];
         if (file !== undefined) {
@@ -660,6 +662,10 @@
         }
       }
 
+      function popUpToggle() {
+        document.getElementById("myPopup").style.display = "block";
+      }
+
       function copyToClipboard(index) {
         // Copies the text to clipboard
         navigator.clipboard.writeText(history[index].content);
@@ -682,219 +688,7 @@
 
     </script>
     <style>
-      #notesButton:disabled {
-        background: #EFEFEF4D !important;
-      }
-      #recordButton:disabled {
-        background: #EFEFEF4D !important;
-      }
-      #image:disabled {
-        background: #EFEFEF4D !important;
-      }
-      #file:disabled {
-        background: #EFEFEF4D !important;
-      }
-      /* Not working :C */
-      #searchButton.disabled {
-        fill: #EFEFEF4D !important;
-        background: #EFEFEF4D !important;
-        background-color: #EFEFEF4D !important;
-      }
-      #imageButton.disabled {
-        fill: #EFEFEF4D !important;
-        background: #EFEFEF4D !important;
-        background-color: #EFEFEF4D !important;
-      }
-      #fileButton.disabled {
-        fill: #EFEFEF4D !important;
-        background: #EFEFEF4D !important;
-        background-color: #EFEFEF4D !important;
-      }
 
-      .loaderDiv {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 150px;
-      }
-      .loader {
-        width: 64px;
-        height: 64px;
-        position: relative;
-        margin: auto;
-        background-image: linear-gradient(#fff 16px, transparent 0),
-          linear-gradient(#ff3d00 16px, transparent 0),
-          linear-gradient(#ff3d00 16px, transparent 0),
-          linear-gradient(#fff 16px, transparent 0);
-        background-repeat: no-repeat;
-        background-size: 16px 16px;
-        background-position: left top, left bottom, right top, right bottom;
-        animation: rotate 1s linear infinite;
-      }
-      @keyframes rotate {
-        0% {
-          width: 64px;
-          height: 64px;
-          transform: rotate(0deg);
-        }
-        50% {
-          width: 30px;
-          height: 30px;
-          transform: rotate(180deg);
-        }
-        100% {
-          width: 64px;
-          height: 64px;
-          transform: rotate(360deg);
-        }
-      }
-      .resp {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        width: 79%;
-        font-weight: 400;
-        font-size: 18px;
-        font-family: "Open Sans", sans-serif;
-        margin-left: 10%;
-        margin-right: 10%;
-        margin-top: 3%;
-        white-space: pre-line;
-        text-align: left !important;
-      }
-      .responseDiv {
-        font-weight: 400;
-        font-size: 18px;
-        font-family: "Open Sans", sans-serif;
-        margin-bottom: 20px;
-        background: rgba(0, 0, 0, 0.01);
-
-        img{
-          margin: auto;
-          max-width: 300px;
-          max-height: 300px;
-        }
-
-        button {
-          margin-bottom: 5px;
-          border: none;
-          background: none;
-          position: relative;
-          float: right;
-        }
-        button:hover {
-          transform: scale(110%);
-        }
-      }
-      #notesContainer {
-        width: 80%;
-        margin-left: 10%;
-      }
-      #notes {
-        height: 200px;
-      }
-      .fileName {
-        margin-top: 10px;
-        font-size: 20px;
-      }
-      #showVoiceRecordingDiv {
-        padding-top: 20px;
-        justify-content: center;
-        align-items: center;
-        width: 40%;
-        margin-left: auto;
-        margin-right: auto;
-        display: flex;
-        button {
-          margin: auto;
-          padding: 10px;
-          font-weight: 400;
-          font-size: 18px;
-          font-family: "Open Sans", sans-serif;
-          background: #1272d3;
-          color: white;
-          border: none;
-        }
-        button:hover {
-          background: #1c1c1c;
-        }
-        button:disabled {
-          background: none;
-          color: whitesmoke;
-        }
-        li {
-          padding-top: 10px;
-          width: 550px;
-          display: grid;
-          flex-direction: column;
-          grid-template-columns: 1fr 1fr 1fr;
-        }
-        a {
-          margin: auto;
-          padding: 10px;
-          font-weight: 400;
-          font-size: 18px;
-          font-family: "Open Sans", sans-serif;
-          background: #1272d3;
-          color: white;
-          border: none;
-          text-decoration: none;
-        }
-        a:hover {
-          background: #1c1c1c;
-        }
-      }
-      textarea {
-        font-weight: 400;
-        font-size: 18px;
-        font-family: "Open Sans", sans-serif;
-        padding-left: 10px;
-        height: 700px;
-        width: 100%;
-        border: 2px solid #1c1c1c;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-      }
-      .clearButton {
-        float: left;
-        margin-right: 20px;
-        background: #1272d3 !important;
-        color: white !important;
-        border: none !important;
-        font-size: 12px;
-      }
-      .clearButton:hover {
-        background: #9499c2 !important;
-        cursor: pointer;
-      }
-      .textAudio {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .autoPlayImg {
-        width: 30px;
-        height: 30px;
-      }
-      #autoPlayButton {
-        position: relative;
-        right: 20px !important;
-      }
-      #stopButton {
-        animation: ease pulse 2s infinite;
-      }
-      @keyframes pulse {
-        0% {
-          background-color: red;
-        }
-        50% {
-          background-color: #edb4b4;
-        }
-        100% {
-          background-color: red;
-        }
-      }
     </style>
   </head>
 
@@ -1000,12 +794,17 @@
                   </div>
                 </button>
               </div>
+              <div class="PopOutBox" id="myPopup">
+                <div>Want to save this file permanently?</div>
+                <button type="button" onclick="ragExtract()">Yes</button>
+                <button type="button" onclick="getFileText()">No</button>
+              </div>
               <label id="imageButton" class="custom-file-upload iconBtn" title="attach image">
                 <input id="image" type="file" accept="image/png, image/gif, image/jpeg" onchange="getImageText()"/>
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000" stroke-width="0.00024000000000000003"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.75 3.75H19.5L20.25 4.5V20.25H4.5L3.75 19.5V3.75ZM5.25 5.25V12.9166L7.90909 10.2575L13.3636 15.7121L16.7727 12.303L18.75 14.2802V5.25H5.25ZM18.75 16.4016L16.7727 14.4243L13.3636 17.8334L7.90909 12.3788L5.25 15.0379V18.75H18.75V16.4016ZM14.7273 7.97727C14.0118 7.97727 13.4318 8.55727 13.4318 9.27273C13.4318 9.98819 14.0118 10.5682 14.7273 10.5682C15.4427 10.5682 16.0227 9.98819 16.0227 9.27273C16.0227 8.55727 15.4427 7.97727 14.7273 7.97727ZM11.9318 9.27273C11.9318 7.72884 13.1834 6.47727 14.7273 6.47727C16.2712 6.47727 17.5227 7.72884 17.5227 9.27273C17.5227 10.8166 16.2712 12.0682 14.7273 12.0682C13.1834 12.0682 11.9318 10.8166 11.9318 9.27273Z" fill="#080341"></path> </g></svg>
               </label>
               <label id="fileButton" class="custom-file-upload iconBtn" title="attach file">
-                <input id="file" type="file" onchange="checkForRag()" />
+                <input id="file" type="file" onchange="popUpToggle()" />
                 <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <defs> <clipPath id="clip-clip"> <rect width="96" height="96"></rect> </clipPath> </defs> <g id="clip" clip-path="url(#clip-clip)"> <g id="pills" transform="translate(-232 -116)"> <g id="Group_151" data-name="Group 151"> <line id="Line_15" data-name="Line 15" y2="49" transform="translate(256 135)" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></line> <line id="Line_16" data-name="Line 16" y2="42" transform="translate(272 135)" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></line> <line id="Line_17" data-name="Line 17" y2="42" transform="translate(288 135)" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></line> <line id="Line_18" data-name="Line 18" y2="49" transform="translate(304 135)" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></line> <path id="Path_182" data-name="Path 182" d="M288,177a8,8,0,0,1-16,0" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></path> <path id="Path_183" data-name="Path 183" d="M256,134.74a16,16,0,0,1,32,0" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></path> <path id="Path_184" data-name="Path 184" d="M304,184.39a24,24,0,0,1-48,0" fill="none" stroke="#58595b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.432"></path> </g> </g> </g> </g></svg>
               </label>
               <button id="searchButton" class="searchIcon iconBtn" type="button" title="search" onclick="evaluatePrompt()">
@@ -1039,6 +838,7 @@
             </div>
           </div>
         </div>
+
         <audio id="responseAudio" preload="auto" crossorigin="anonymous">
           <source src="assets/250-milliseconds-of-silence.mp3" type="audio/mp3">
           Your browser does not support the audio element.

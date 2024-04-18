@@ -955,3 +955,237 @@ input[type="password" i]{
    padding: 0 20px !important;
   }
 }
+
+/*ALL CSS*/
+#notesButton:disabled {
+  background: #EFEFEF4D !important;
+}
+#recordButton:disabled {
+  background: #EFEFEF4D !important;
+}
+#image:disabled {
+  background: #EFEFEF4D !important;
+}
+#file:disabled {
+  background: #EFEFEF4D !important;
+}
+/* Not working :C */
+#searchButton.disabled {
+  fill: #EFEFEF4D !important;
+  background: #EFEFEF4D !important;
+  background-color: #EFEFEF4D !important;
+}
+#imageButton.disabled {
+  fill: #EFEFEF4D !important;
+  background: #EFEFEF4D !important;
+  background-color: #EFEFEF4D !important;
+}
+#fileButton.disabled {
+  fill: #EFEFEF4D !important;
+  background: #EFEFEF4D !important;
+  background-color: #EFEFEF4D !important;
+}
+
+.PopOutBox{
+  display: none;
+  background: rgba(21, 18, 18, 0.78);
+  font-weight: 700;
+  position: absolute;
+  z-index: 0;
+  bottom: 100px;
+  width: 350px;
+  height: 150px;
+  align-content: center;
+  text-align: center;
+
+  button{
+    position: relative;
+    top: 20px;
+    font-weight: 700;
+  }
+}
+
+.loaderDiv {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+}
+.loader {
+  width: 64px;
+  height: 64px;
+  position: relative;
+  margin: auto;
+  background-image: linear-gradient(#fff 16px, transparent 0),
+  linear-gradient(#ff3d00 16px, transparent 0),
+  linear-gradient(#ff3d00 16px, transparent 0),
+  linear-gradient(#fff 16px, transparent 0);
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+  background-position: left top, left bottom, right top, right bottom;
+  animation: rotate 1s linear infinite;
+}
+@keyframes rotate {
+  0% {
+    width: 64px;
+    height: 64px;
+    transform: rotate(0deg);
+  }
+  50% {
+    width: 30px;
+    height: 30px;
+    transform: rotate(180deg);
+  }
+  100% {
+    width: 64px;
+    height: 64px;
+    transform: rotate(360deg);
+  }
+}
+.resp {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 79%;
+  font-weight: 400;
+  font-size: 18px;
+  font-family: "Open Sans", sans-serif;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-top: 3%;
+  white-space: pre-line;
+  text-align: left !important;
+}
+.responseDiv {
+  font-weight: 400;
+  font-size: 18px;
+  font-family: "Open Sans", sans-serif;
+  margin-bottom: 20px;
+  background: rgba(0, 0, 0, 0.01);
+
+  img{
+    margin: auto;
+    max-width: 300px;
+    max-height: 300px;
+  }
+
+  button {
+    margin-bottom: 5px;
+    border: none;
+    background: none;
+    position: relative;
+    float: right;
+  }
+  button:hover {
+    transform: scale(110%);
+  }
+}
+#notesContainer {
+  width: 80%;
+  margin-left: 10%;
+}
+#notes {
+  height: 200px;
+}
+.fileName {
+  margin-top: 10px;
+  font-size: 20px;
+}
+#showVoiceRecordingDiv {
+  padding-top: 20px;
+  justify-content: center;
+  align-items: center;
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  button {
+    margin: auto;
+    padding: 10px;
+    font-weight: 400;
+    font-size: 18px;
+    font-family: "Open Sans", sans-serif;
+    background: #1272d3;
+    color: white;
+    border: none;
+  }
+  button:hover {
+    background: #1c1c1c;
+  }
+  button:disabled {
+    background: none;
+    color: whitesmoke;
+  }
+  li {
+    padding-top: 10px;
+    width: 550px;
+    display: grid;
+    flex-direction: column;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  a {
+    margin: auto;
+    padding: 10px;
+    font-weight: 400;
+    font-size: 18px;
+    font-family: "Open Sans", sans-serif;
+    background: #1272d3;
+    color: white;
+    border: none;
+    text-decoration: none;
+  }
+  a:hover {
+    background: #1c1c1c;
+  }
+}
+textarea {
+  font-weight: 400;
+  font-size: 18px;
+  font-family: "Open Sans", sans-serif;
+  padding-left: 10px;
+  height: 700px;
+  width: 100%;
+  border: 2px solid #1c1c1c;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.clearButton {
+  float: left;
+  margin-right: 20px;
+  background: #1272d3 !important;
+  color: white !important;
+  border: none !important;
+  font-size: 12px;
+}
+.clearButton:hover {
+  background: #9499c2 !important;
+  cursor: pointer;
+}
+.textAudio {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.autoPlayImg {
+  width: 30px;
+  height: 30px;
+}
+#autoPlayButton {
+  position: relative;
+  right: 20px !important;
+}
+#stopButton {
+  animation: ease pulse 2s infinite;
+}
+@keyframes pulse {
+  0% {
+    background-color: red;
+  }
+  50% {
+    background-color: #edb4b4;
+  }
+  100% {
+    background-color: red;
+  }
+}

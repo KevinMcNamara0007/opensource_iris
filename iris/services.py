@@ -66,14 +66,17 @@ def file_semantic_search(query):
         # have an array of title and content embeddings
         for key, value in files.items():
             key_title_content.append([key, value["title_embeddings"], value["content_embeddings"]])
+        print("Appended Embeddings")
         # Title Embedding Corpus
         title_embeddings = torch.stack([x[1] for x in key_title_content])
         # Content Embedding Corpus
         content_embeddings = torch.stack([x[2] for x in key_title_content])
+        print("Got to torch stacks")
         # Semantic Search for top 2 of Title Embeddings > 50% add to matches
         matches = [hit for hit in semantic_search(query_embedding, title_embeddings, 2) if hit['score'] >= .15]
         # Semantic Search for top 2 of Content Embeddings > 40% add to matches
         matches.extend([hit for hit in semantic_search(query_embedding, content_embeddings, 2) if hit['score'] >= .15])
+        print("got to hits")
         #  Insert Matches into a dictionary using corpus_id as key and score as value
         for match in matches:
             corp_id = match.get('corpus_id', "not found")

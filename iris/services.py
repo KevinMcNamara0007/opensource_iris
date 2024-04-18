@@ -1,6 +1,6 @@
 import torch
 
-from rag_utilities import embedd, load_pickle, semantic_search
+from rag_utilities import embedd, load_pickle, semantic_search, save_pickle
 from utilities import file_checker, customized_response, voice_transcription, text_to_speech, get_audio_file, \
     image_generation, image_to_text, history_maintenance
 
@@ -9,6 +9,37 @@ def get_all_files():
     files = load_pickle()
     return [{"file_id": key, "file_name": value["title"], "file_content": value["content"]}
             for key, value in files.items()]
+
+
+def reset_rag_data():
+    files = load_pickle()
+    key = '5cb0d123-c917-4e11-a735-a70cb7fd09a7'
+    file = {}
+    for key, value in files.items():
+        if key == '5cb0d123-c917-4e11-a735-a70cb7fd09a7':
+            file = files[key]
+            break
+    save_pickle({key: file})
+    return "data has been reset to default"
+
+
+def delete_file_from_rag(file_id):
+    files = load_pickle()
+    try:
+        file = None
+        for key, value in files.items():
+            if key == file_id:
+                file = files[key]
+                break
+        if file:
+            files.pop(file_id)
+            save_pickle(files)
+            return f"Successfully Deleted File: {file_id}"
+        else:
+            return "Failed to delete file or file does not exist"
+    except Exception as exc:
+        print(exc)
+        return "Failed to delete file"
 
 
 async def freestyle_service(prompt, history, notes, file, temp, pres, freq, api_key):

@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Form, UploadFile, File
-
+from fastapi import APIRouter, Form, UploadFile, File, Query
 
 from services import freestyle_service, transcribe_voice_service, text_to_voice_service, get_audio_file_service, \
     image_generation_service, file_to_text, image_to_text_service, history_management_service, get_all_files, \
-    file_semantic_search
+    file_semantic_search, reset_rag_data, delete_file_from_rag
 
 router = APIRouter(
     prefix="/Inference",
@@ -72,7 +71,7 @@ async def file_to_text_extraction(
         api_key: str = Form(default=None, description="OpenAI key"),
         rag: str = Form(default="n", description="Permanent save? Y or N")
 ):
-    return await file_to_text(file,rag, api_key)
+    return await file_to_text(file, rag, api_key)
 
 
 @router.post("/image_text_extraction", description="Returns text from image")
@@ -102,3 +101,15 @@ def semantic_search(
         query: str = Form(description="Query"),
 ):
     return file_semantic_search(query)
+
+
+@router.get("/reset_rag_data", description="reset all files from RAG pickle")
+def reset_data():
+    return reset_rag_data()
+
+
+@router.get("/delete_file", description="delete_file")
+def delete_file(
+        file_id: str = Query(description="Query"),
+):
+    return delete_file_from_rag(file_id)

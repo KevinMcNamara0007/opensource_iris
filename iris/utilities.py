@@ -156,6 +156,7 @@ def embedd_each(file_content, api_key):
         print(title)
         embedded_title = embedd(title)
         embedded_content = embedd(file_content.replace("\n", ""))
+        print(embedded_content)
         unique_id = str(uuid.uuid4())
         files = load_pickle()
         files.update({unique_id: {

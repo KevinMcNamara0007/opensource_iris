@@ -7,11 +7,11 @@ from sentence_transformers import SentenceTransformer, util
 
 # Global Variables
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-pickle_location = './files/files.pickle'
-model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+pickle_location = 'iris/files/files.pickle'
+model = SentenceTransformer('iris/efs/models/all-minilm-l6-v2')
 
 
-def semantic_search(text_embedding, corpus_embeddings, top_k=2):
+def semantic_search(text_embedding, corpus_embeddings, top_k=3):
     return util.semantic_search(text_embedding, corpus_embeddings, top_k)[0]
 
 

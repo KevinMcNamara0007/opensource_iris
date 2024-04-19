@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Form, UploadFile, File, Query
 
-from services import freestyle_service, transcribe_voice_service, text_to_voice_service, get_audio_file_service, \
+from iris.src.services.services import freestyle_service, transcribe_voice_service, text_to_voice_service, get_audio_file_service, \
     image_generation_service, file_to_text, image_to_text_service, history_management_service, get_all_files, \
     file_semantic_search, reset_rag_data, delete_file_from_rag
 

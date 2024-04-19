@@ -1,7 +1,8 @@
 import numpy as np
+import torch
 
-from rag_utilities import embedd, load_pickle, semantic_search, save_pickle
-from utilities import file_checker, customized_response, voice_transcription, text_to_speech, get_audio_file, \
+from iris.src.utilities.rag_utilities import embedd, load_pickle, semantic_search, save_pickle
+from iris.src.utilities.utilities import file_checker, customized_response, voice_transcription, text_to_speech, get_audio_file, \
     image_generation, image_to_text, history_maintenance
 
 
@@ -68,11 +69,8 @@ def file_semantic_search(query):
             key_title_content.append([key, value["title_embeddings"], value["content_embeddings"]])
         print("Appended Embeddings")
         # Title Embedding Corpus
-        title_embeddings = np.array([x[1].cpu().numpy() for x in key_title_content])
-        content_embeddings = np.array([x[2].cpu().numpy() for x in key_title_content])
-        #title_embeddings = np.array([x[1] for x in key_title_content])
-        # Content Embedding Corpus
-        #content_embeddings = np.array([x[2] for x in key_title_content])
+        title_embeddings = torch.stack([x[1] for x in key_title_content]).to(device="cpu")
+        content_embeddings = torch.stack([x[2] for x in key_title_content]).to(device="cpu")
         print("Got to torch stacks")
         # Semantic Search for top 2 of Title Embeddings > 50% add to matches
         matches = [hit for hit in semantic_search(query_embedding, title_embeddings, 3) if hit['score'] >= .2]

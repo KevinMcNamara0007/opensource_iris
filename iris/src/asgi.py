@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from fastapi import Request
 
-import converse_controller
+from iris.src.controllers import converse_controller
 
 app = FastAPI(
     title="IRIS",
@@ -19,7 +21,7 @@ app = FastAPI(
         "docExpansion": "none"
     }
 )
-app.mount("/iris", StaticFiles(directory="static", html=True), name="static")
+app.mount("/iris", StaticFiles(directory="iris/static", html=True), name="static")
 
 app.include_router(converse_controller.router)
 

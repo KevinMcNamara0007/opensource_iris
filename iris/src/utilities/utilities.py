@@ -14,7 +14,7 @@ from pptx import Presentation
 import base64
 import tiktoken
 
-from rag_utilities import embedd, load_pickle, save_pickle
+from iris.src.utilities.rag_utilities import embedd, load_pickle, save_pickle
 
 accepted_files = {
     "txt": "text",
@@ -53,7 +53,7 @@ def text_to_speech(text, api_key):
         response_format="wav"
     )
     random_number = random.randrange(1, 10000, 3)
-    response.stream_to_file(f"static/audio/{random_number}.wav")
+    response.stream_to_file(f"iris/static/audio/{random_number}.wav")
     return f"audio/{random_number}.wav"
 
 

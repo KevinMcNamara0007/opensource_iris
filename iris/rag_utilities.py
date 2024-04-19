@@ -5,6 +5,8 @@ import time
 
 from sentence_transformers import SentenceTransformer, util
 
+# Global Variables
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 pickle_location = './files/files.pickle'
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 

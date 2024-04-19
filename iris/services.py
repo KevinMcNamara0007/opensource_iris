@@ -68,14 +68,16 @@ def file_semantic_search(query):
             key_title_content.append([key, value["title_embeddings"], value["content_embeddings"]])
         print("Appended Embeddings")
         # Title Embedding Corpus
-        title_embeddings = np.array([x[1] for x in key_title_content])
+        title_embeddings = np.array([x[1].cpu().numpy() for x in key_title_content])
+        content_embeddings = np.array([x[2].cpu().numpy() for x in key_title_content])
+        #title_embeddings = np.array([x[1] for x in key_title_content])
         # Content Embedding Corpus
-        content_embeddings = np.array([x[2] for x in key_title_content])
+        #content_embeddings = np.array([x[2] for x in key_title_content])
         print("Got to torch stacks")
         # Semantic Search for top 2 of Title Embeddings > 50% add to matches
-        matches = [hit for hit in semantic_search(query_embedding, title_embeddings, 2) if hit['score'] >= .15]
+        matches = [hit for hit in semantic_search(query_embedding, title_embeddings, 3) if hit['score'] >= .2]
         # Semantic Search for top 2 of Content Embeddings > 40% add to matches
-        matches.extend([hit for hit in semantic_search(query_embedding, content_embeddings, 2) if hit['score'] >= .15])
+        matches.extend([hit for hit in semantic_search(query_embedding, content_embeddings, 3) if hit['score'] >= .2])
         print("got to hits")
         #  Insert Matches into a dictionary using corpus_id as key and score as value
         for match in matches:
@@ -83,7 +85,7 @@ def file_semantic_search(query):
             score = match.get('score', 0)
             refs.update({corp_id: refs.get(corp_id) if score < refs.get(corp_id, 0) else score})
         # Sort the entries based on score from highest to smallest and get top 2
-        hits = sorted(refs.items(), key=lambda x: x[1], reverse=True)[:2]
+        hits = sorted(refs.items(), key=lambda x: x[1], reverse=True)[:3]
         print(hits)
         # return references to user
         references = []

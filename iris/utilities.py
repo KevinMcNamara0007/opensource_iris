@@ -152,8 +152,7 @@ async def file_reader(file, api_key, rag):
 
 def embedd_each(file_content, api_key):
     try:
-        prompt = f"Respond only with a short title for this Text: {file_content}"
-        title = customized_response(prompt, "[]", api_key)
+        title = file_content[:50]
         print(title)
         embedded_title = embedd(title)
         embedded_content = embedd(file_content.replace("\n", ""))

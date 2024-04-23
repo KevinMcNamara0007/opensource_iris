@@ -48,7 +48,7 @@ def text_to_speech(text, api_key):
         text = text[0:4096]
     response = client.audio.speech.create(
         model="tts-1",
-        voice="alloy",
+        voice="nova",
         input=text,
         response_format="wav"
     )

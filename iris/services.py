@@ -1,4 +1,3 @@
-import numpy as np
 import torch as tp
 
 from rag_utilities import embedd, load_pickle, semantic_search, save_pickle

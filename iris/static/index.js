@@ -76,28 +76,6 @@ function insertImageResponseBox(targetDiv, data) {
   scrollToLast()
 }
 
-const audioFrequencyBarEle = `
-<div class="audioFrequencyBar">
-<div id="audioControls" style="display: none;">
-    <button id="audioControl" class="pause" onclick="handleAudioControl()">
-      <div class="iconWrapper" id="pause">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M4 2h6v20H4zm10 20h6V2h-6z"></path><path fill="none" d="M0 0h24v24H0z"></path></g></svg>
-      </div>
-      <div class="iconWrapper" id="resume">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M6 1.773l15 10.23L6 22.226z"></path><path fill="none" d="M0 0h24v24H0z"></path></g></svg>
-      </div>
-    </button>
-</div>
-<canvas id="canvas" style="display: none;"></canvas>
-</div>`;
-
-function removeFile() {
-  const fileEle = document.getElementById("file")
-  fileEle.value = null;
-  let fileName = document.getElementById("fileName");
-  fileName.innerHTML = "";
-}
-
 let APIKEY = localStorage.getItem("apiKey") ? localStorage.getItem("apiKey") : "";
 
 let modelSelecter = "oai";
@@ -166,20 +144,20 @@ function semanticSearch(){
           if (notes.value !== "") {
             notes = document.getElementById("notes");
             data.forEach((item, index)=>{
-              notes.value = notes.value + "\n" + "File Text " + index + ": " + item.content
+              notes.value = notes.value + "\n" + "File Text to use as reference if useful: " + index + ": " + item.content
             })
           }
           if (notes.value === "") {
             notes = document.getElementById("notes");
             data.forEach((item, index)=>{
-              notes.value = "\n" + "File Text " + index + ": " + item.content
+              notes.value = "\n" + "File Text to use as reference if useful: " + index + ": " + item.content
             })
           }
         } else {
           loadNotes();
           notes = document.getElementById("notes");
           data.forEach((item, index)=>{
-            notes.value = "\n" + "File Text " + index + ": " + item.content
+            notes.value = "\n" + "File Text to use as reference if useful: " + index + ": " + item.content
           })
         }
         callAPI()
@@ -447,7 +425,7 @@ function getImageText() {
   }
 }
 
-function getFillerVoice(){
+async function getFillerVoice() {
   // document.getElementById("soundWaveContainer").style.display = "flex";
   // const audioPopup = document.getElementById("audioPopup")
   // const audioLoader = document.getElementById("audioLoader")
@@ -599,7 +577,6 @@ function getFileText() {
         notes.value = result;
       }
       hideLoader()
-      alert("File converted to text, check notes");
     },
     error: function ajaxError(jqXHR, textStatus, errorThrown) {
       hideLoader()

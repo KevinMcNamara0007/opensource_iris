@@ -708,7 +708,7 @@ button.clearButton:hover {
 }
 @keyframes wave1 {
   from {
-    transform: scaleY();
+
   }
   to {
     transform: scaleY(0.5);

@@ -11,15 +11,15 @@ from fastapi import Request
 import converse_controller
 
 app = FastAPI(
-    title="IRIS",
-    summary="Interface and API for IRIS",
+    title="AURA",
+    summary="Interface and API for AURA",
     version="1",
     swagger_ui_parameters={
         "syntaxHighlight.theme": "obsidian",
         "docExpansion": "none"
     }
 )
-app.mount("/iris", StaticFiles(directory="static", html=True), name="static")
+app.mount("/aura", StaticFiles(directory="static", html=True), name="static")
 
 app.include_router(converse_controller.router)
 

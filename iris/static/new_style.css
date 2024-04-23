@@ -1,15 +1,15 @@
 :root {
-  --searchbar-border-color: #9d9d9d;
+  --searchbar-border-color: #a2a2a2;
   --main-button-hover-color: rgb(28, 58, 195);
   --searchbar-icon-color: #eaeaea;
   --header-height: 100px;
   --loader-color: rgb(28, 58, 195);
-  --default-text: #eaeaea;
+  --default-text: #ffffff;
 }
 body {
   /* color: #4b4b4b; */
   font-family: "Open Sans", Arial, sans-serif;
-  background-color: #1e1e1e;
+  background-color: #000000;
   color: #fff;
   margin: 0;
   padding: 0;
@@ -69,7 +69,7 @@ header {
   /* padding: 20px 0; */
   color: #fff;
   position: relative;
-  height: 400px;
+  height: 200px;
 }
 header::before {
   content: "";
@@ -79,7 +79,7 @@ header::before {
   z-index: -1;
 
   display: block;
-  background-image: url('assets/bg.jpg');
+  background-image: url('assets/background.gif');
   background-size: cover;
   background-position: 50% 50%;
   width: 100%;
@@ -106,6 +106,29 @@ header h1 {
   justify-content: center;
   align-items: center;
 }
+.auraLogoSpot{
+  display: flex !important;
+  flex-direction: row !important;
+  position: absolute !important;
+  right: 0 !important;
+  margin-right: 30px;
+}
+.headerLogo{
+  width: 150px;
+}
+.settingIcon{
+  top: 160px;
+  left: 0 !important;
+  margin-left: 10px;
+  position: absolute !important;
+  float:left !important;
+  background: none;
+  border: none;
+}
+.settingIcon:hover{
+  cursor: pointer;
+  transform: scale(120%);
+}
 /* Navbar */
 .navbar {
   height: 50px;
@@ -121,22 +144,32 @@ header h1 {
   font-size: 24px;
   font-weight: 700;
 }
+/*Nav Images*/
+.navImage{
+  position: relative;
+  width: 30px;
+}
+.navImage:hover{
+  transform: scale(105%);
+}
+.key:hover{
+  background: #004de8;
+}
 /* Panel */
 nav ul {
   background-color: #000;
   list-style-type: none;
-  padding: 12px 14px;
+  padding: 10px 10px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 20px;
+  gap: 5px;
 }
 
 nav ul li {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
 }
 
 nav ul li a {
@@ -149,19 +182,19 @@ nav ul li a {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
 }
 #aiModel {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
 }
 #ragToggle{
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
 }
 .switch {
   position: relative;
@@ -198,7 +231,7 @@ nav ul li a {
   border-radius: 50%;
 }
 input:checked + .slider {
-  background-color: #2ab934;
+  background-color: #2196F3;
 }
 
 input:focus + .slider {
@@ -235,7 +268,7 @@ input:checked + .slider:after {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--searchbar-border-color);
+  background-color: #ba77ff;
   -webkit-transition: .4s;
   transition: .4s;
   border-radius: 34px;
@@ -254,7 +287,7 @@ input:checked + .slider:after {
   border-radius: 50%;
 }
 input:checked + .modelSlider {
-  background-color: #2ab934;
+  background-color: #2196F3;
 }
 
 input:focus + .modelSlider {
@@ -443,7 +476,7 @@ textarea#notes {
 }
 /* Response section */
 .chatIOContainer {
-  max-width: 1000px;
+  max-width: 1500px;
   display: flex;
   flex-direction: column;
   /* height: calc(100vh - var(--header-height) - 24px);
@@ -917,7 +950,7 @@ button#audioControl {
 /* Guide */
 #guide {
   height: 100%;
-  color: #676767;
+  color: #d9d9d9;
 }
 #guide img {
   object-fit: cover;
@@ -943,11 +976,10 @@ button#audioControl {
 li.menuRight{
   right: 0 !important;
   position: relative !important;
-  float: right !important;
 }
 .float-right{
+  margin-right: 5px;
   position: relative !important;
-  float: right !important;
 }
 input[type="password" i]{
   width: 100px;
@@ -1156,8 +1188,7 @@ textarea {
   border-bottom-right-radius: 0;
 }
 .clearButton {
-  float: left;
-  margin-right: 20px;
+  margin-left: 8px;
   background: #1272d3 !important;
   color: white !important;
   border: none !important;

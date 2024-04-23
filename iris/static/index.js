@@ -614,6 +614,9 @@ window.onload = function () {
   document.getElementById("showVoiceRecordingDiv").style.display = "none";
   document.getElementById("loaderContainer").style.display = "none";
   document.getElementById("apiKey").value = APIKEY;
+  if(document.getElementById("apiKey").value !== ""){
+    document.getElementById("apiKey").style.display = "none"
+  }
   displayChatHistory();
   if(history.length < 1){
     document.getElementById("clearHistoryDiv").style.display = "none";
@@ -790,3 +793,13 @@ const guideDiv =
           </div>
         </div>
       </div>`
+
+
+function toggleAPIKey(){
+  let apikey = document.getElementById("apiKey");
+  if(apikey.style.display === "none"){
+    apikey.style.display = "block"
+  }else{
+    apikey.style.display = "none"
+  }
+}

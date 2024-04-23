@@ -2,8 +2,8 @@
 <html class="no-js" lang="">
   <head>
     <meta charset="UTF-8">
-    <title>AI Assistant</title>
-    <link rel="shortcut icon" href="#">
+    <title>AURA</title>
+    <link rel="shortcut icon" href="assets/auraicon.ico">
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="new_style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -14,23 +14,21 @@
     <!-- Add your site or application content here -->
     <div class="mainContainer stretchRoot stretch">
       <header>
-        <div class="navbar">
-          <div class="brand">AI Assistant</div>
-        </div>
         <div class="hero">
-          <h1>Welcome to AI Assistant</h1>
-          <h2>How can I assist you?</h2>
         </div>
       </header>
       <nav>
+        <div class="auraLogoSpot">
+          <div><img class="headerLogo" src="assets/auramain.png" alt="AURA"/></div>
+        </div>
         <ul>
           <li class="float-right" id="apiInput">
-            OAI-Key:
+            <img onclick="toggleAPIKey()" class="navImage key" src="assets/aikey.svg" alt="Open AI Key Toggle Hide/Show" title="Open AI Key"/>
             <input id="apiKey" type="password" placeholder="Enter Open AI Key here" onchange="updateKey()"/>
           </li>
           <li>
             <label id="soundToggle">
-              <div>Sound</div>
+              <img class="navImage" src="assets/sound.png" alt="sound" title="Sound On/Off"/>
               <div class="switch">
                 <input type="checkbox" id="togBtn" checked="checked" onclick="setAutoPlay()">
                 <div class="slider round"></div>
@@ -39,7 +37,7 @@
           </li>
           <li>
             <label id="aiModel">
-              <div>Model</div>
+              <img class="navImage" src="assets/model.png" alt="model" title="AI Model"/>
               <div class="switch">
                 <input type="checkbox" id="togBtn1" checked="checked" onclick="setModel()">
                 <div class="modelSlider round"></div>
@@ -48,7 +46,7 @@
           </li>
           <li>
             <label id="ragToggle">
-              <div>RAG</div>
+              <img class="navImage" src="assets/rag.png" alt="rag" title="RAG Toggle"/>
               <div class="switch">
                 <input type="checkbox" id="togBtn2" checked="checked" onclick="setRag()">
                 <div class="slider round"></div>
@@ -57,12 +55,12 @@
           </li>
           <li id="clearHistoryDiv">
             <button type="button" class="clearButton" onclick="clearChatHistory()">
-              Clear Chat History
+              <img class="navImage" src="assets/clearcache.png" alt="Clear Chat History" title="Clear Chat History"/>
             </button>
           </li>
           <li class="menuRight">
             <button type="button" class="clearButton" onclick="deleteAllFiles()">
-              Delete All Permanent Files
+              <img class="navImage" src="assets/trash.png" alt="Delete all permanent files" title="Delete all permanent files"/>
             </button>
           </li>
         </ul>

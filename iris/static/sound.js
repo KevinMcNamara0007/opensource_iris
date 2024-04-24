@@ -97,7 +97,7 @@ function close(audio) {
   cancelAnimationFrame(request);
   audio.src = "";
   canvas.style.display = "none";
-  controlBar.style.display = "none";
+  // controlBar.style.display = "none";
   wrapper.style.display = "none";
   audioPopup.style.display = "none";
 }

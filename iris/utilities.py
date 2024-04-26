@@ -152,11 +152,11 @@ async def file_reader(file, api_key, rag):
 
 def embedd_each(file_content, api_key):
     try:
-        title = file_content[:50]
+        title = file_content[:80]
         print(title)
         embedded_title = embedd(title)
         embedded_content = embedd(file_content.replace("\n", ""))
-        print(embedded_content)
+        # print(embedded_content)
         unique_id = str(uuid.uuid4())
         files = load_pickle()
         files.update({unique_id: {
@@ -193,10 +193,22 @@ def custom_ms_word_reader(word_file, word_file_extension, word_file_content, api
         text = '\n'.join([text, doc.paragraphs[i].text])
     os.remove(f"{doc_id}.{word_file_extension}")
     if rag == "y":
+        if doc.tables:
+            for table in doc.tables:
+                tbl_list = []
+                row_list = []
+                for i, row in enumerate(table.rows):
+                    for j, cell in enumerate(row.cells):
+                        row_list.append(cell.text)
+                    tbl_list.append(row_list)
+                    if len(str(tbl_list[i])) > 20:
+                        embedd_each(str(tbl_list[i]), api_key)
+                    row_list = []
         content_split = text.split("\n\n\n\n")
         if len(content_split) > 1:
             for split in content_split:
-                embedd_each(split, api_key)
+                if len(split) > 10:
+                    embedd_each(split, api_key)
         else:
             embedd_each(text, api_key)
     return text
@@ -214,13 +226,17 @@ def custom_csv_reader(csv_content, api_key, rag):
 
 
 def custom_excel_reader(excel_content, api_key, rag):
-    data = pd.read_excel(io.BytesIO(excel_content))
-    if rag == "y":
-        for index, row in data.iterrows():
-            row_text = ""
-            for column in row:
-                row_text = row_text + str(column) + " "
-            embedd_each(row_text, api_key)
+    xls = pd.ExcelFile(io.BytesIO(excel_content))
+    for sheet in xls.sheet_names:
+        data = pd.read_excel(io.BytesIO(excel_content), sheet)
+        if rag == "y":
+            for index, row in data.iterrows():
+                row_text = ""
+                for column in row:
+                    row_text = row_text + str(column) + " "
+                    row_text = row_text.replace("  ", "")
+                if len(row_text) > 30:
+                    embedd_each(row_text.replace("nan", ""), api_key)
     return pd.read_excel(io.BytesIO(excel_content)).to_string()
 
 

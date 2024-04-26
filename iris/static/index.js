@@ -234,7 +234,8 @@ function callAPI() {
       error: function (xhr, ajaxOptions, thrownError) {
         // document.getElementById("loaderContainer").style.display = "none";
         hideLoader()
-        alert("OpenAI Failed to load response, try again");
+        enableElements()
+        displayAlert("OpenAI failed to get response.")
       },
     });
   }else{
@@ -292,6 +293,8 @@ function callELF(){
       insertResponseBox(responseHTML, data.choices[0].message.content, history.indexOf(assistantObject))
     },
     error: function (xhr, ajaxOptions, thrownError) {
+      enableElements()
+      displayAlert("ELF failed to load response, try again.")
       // document.getElementById("loaderContainer").style.display = "none";
       hideLoader()
     },
@@ -413,12 +416,12 @@ function getImageText() {
           hideLoader()
           enableElements();
           $("#image").val(null)
-          alert("OpenAI could not process your request, please try a different prompt and add your image again");
+          displayAlert("OpenAI could not process your request, please try a different prompt and add your image again.")
         },
       });
     }else{
       $("#image").val(null)
-      alert("Please include a prompt for your image and add your image again")
+      displayAlert("Please include a prompt for your image and add your image again.")
     }
   }else{
     elfImageExtractor()
@@ -458,13 +461,13 @@ function elfImageExtractor(){
       }else{
         $("#image").val(null)
         hideLoader()
-        alert("Elf Failed to extract image text")
+        displayAlert("Elf Failed to extract image text.")
       }
     },
     error: function ajaxError(jqXHR, textStatus, errorThrown) {
       $("#image").val(null)
       hideLoader()
-      alert("Elf Failed to extract image text")
+      displayAlert("Elf Failed to extract image text.")
     }
   });
 }
@@ -515,12 +518,12 @@ function ragExtract(){
     success: function (result) {
       $("#file").val(null)
       hideLoader()
-      alert("Successfully added file permanently, ready to query against")
+      displayAlert("Successfully added File Permanently")
     },
     error: function ajaxError(jqXHR, textStatus, errorThrown) {
       hideLoader()
       $("#file").val(null)
-      alert("Failed to Permanently add file, try again");
+      displayAlert("Failed to add file, please try again")
     },
   });
 }
@@ -532,9 +535,9 @@ function deleteAllFiles(){
     processData: false,
     contentType: false,
     success: function (result) {
-      alert("All Files have been deleted")
+      displayAlert("All files have been deleted.")
     },error: function ajaxError(jqXHR, textStatus, errorThrown) {
-
+      displayAlert("Failed to delete all files.")
     }
   })
 }
@@ -580,7 +583,7 @@ function getFileText() {
     },
     error: function ajaxError(jqXHR, textStatus, errorThrown) {
       hideLoader()
-      alert("Failed to get File Text");
+      displayAlert("Failed to get file text, please try again.")
     },
   });
 }
@@ -646,7 +649,7 @@ function generateImage(text){
       //Enable All Form Elements and disable loader
       enableElements()
       hideLoader()
-      alert("Could not generate image, try again");
+      displayAlert("Could not generate Image, please try again.")
     },
   });
 }
@@ -679,7 +682,7 @@ function getTextToAudio(text) {
     error: function (xhr, ajaxOptions, thrownError) {
       //Enable All Form Elements
       enableElements()
-      alert("Could not get audio for this response due to length");
+      displayAlert("Could not get audio.")
     },
   });
 }
@@ -779,4 +782,15 @@ function toggleAPIKey(){
   }else{
     apikey.style.display = "none"
   }
+}
+
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+const displayAlert = msg => {
+  document.getElementById("popup").style.display = "block"
+  document.getElementById("alert").innerText = msg
+  delay(3000).then(()=>{
+    document.getElementById("alert").innerText = ""
+    document.getElementById("popup").style.display = "none"
+  })
 }

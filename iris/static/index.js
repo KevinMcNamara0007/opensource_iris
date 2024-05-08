@@ -274,7 +274,11 @@ function callELF(){
       responseHTML.style.display = "flex";
 
       //Get Audio For Response
-      getTextToAudio(data.choices[0].message.content);
+      try{
+        elfTTS(data.choices[0].message.content);
+      }catch (e) {
+        getTextToAudio(data.choices[0].message.content);
+      }
 
       let assistantResponse = data.choices[0].message.content.replaceAll(/\\n/g, " ");
       //Save response history
@@ -685,6 +689,26 @@ function getTextToAudio(text) {
       displayAlert("Could not get audio.")
     },
   });
+}
+
+function elfTTS(text) {
+  const audioPopup = document.getElementById("audioPopup")
+  const audioLoader = document.getElementById("audioLoader")
+  const audioBar = document.getElementById("audioFrequencyBar")
+  audioPopup.style.display = "flex"
+  audioLoader.style.display = "block"
+  audioBar.style.display = "none"
+
+  try{
+    //Enable All Form Elements
+    enableElements()
+    let audio = document.getElementById("textToAudio");
+    showAudioFrequencyBar(autoplay, "http://127.0.0.1:8000/Inference/tts?transcript=" + text)
+  }catch (e) {
+    //Enable All Form Elements
+    enableElements()
+    displayAlert("Elf failed to generate audio.")
+  }
 }
 
 function enableElements(){

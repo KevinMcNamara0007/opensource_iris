@@ -144,20 +144,20 @@ function semanticSearch(){
           if (notes.value !== "") {
             notes = document.getElementById("notes");
             data.forEach((item, index)=>{
-              notes.value = notes.value + "\n" + "File Text to use as reference if useful: " + index + ": " + item.content
+              notes.value = notes.value + "\n" + "Reference " + index + ": " + item.content
             })
           }
           if (notes.value === "") {
             notes = document.getElementById("notes");
             data.forEach((item, index)=>{
-              notes.value = "\n" + "File Text to use as reference if useful: " + index + ": " + item.content
+              notes.value = "\n" + "Reference " + index + ": " + item.content
             })
           }
         } else {
           loadNotes();
           notes = document.getElementById("notes");
           data.forEach((item, index)=>{
-            notes.value = "\n" + "File Text to use as reference if useful: " + index + ": " + item.content
+            notes.value = notes.value + " \n" + "Reference " + index + ": " + item.content
           })
         }
         callAPI()

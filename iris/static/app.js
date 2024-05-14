@@ -119,80 +119,39 @@ function createDownloadLink(blob) {
 
 	//Send straight to Translate then LLM
 
-	if(modelSelecter === "oai"){
-		const xhr=new XMLHttpRequest();
-		xhr.onload=function(e) {
-			if(this.readyState === 4) {
-				let text = "";
-				text = e.target.responseText.replaceAll(/\\n/g," ");
-				text = text.replace(/"/g,'');
-				let search = document.getElementById("instructions")
-				if(search){
-					if(search.value !== ""){
-						search = document.getElementById("instructions")
-						search.value = text;
-						addUserInputText(text)
-						evaluatePrompt()
-					}
-					if(search.value === ""){
-						search = document.getElementById("instructions")
-						search.value = text;
-						addUserInputText(text)
-						evaluatePrompt()
-					}
+	const xhr=new XMLHttpRequest();
+	xhr.onload=function(e) {
+		if(this.readyState === 4) {
+			let text = "";
+			text = e.target.responseText.replaceAll(/\\n/g," ");
+			text = text.replace(/"/g,'');
+			let search = document.getElementById("instructions")
+			if(search){
+				if(search.value !== ""){
+					search = document.getElementById("instructions")
+					search.value = text;
+					addUserInputText(text)
+					evaluatePrompt()
 				}
-				else{
+				if(search.value === ""){
 					search = document.getElementById("instructions")
 					search.value = text;
 					addUserInputText(text)
 					evaluatePrompt()
 				}
 			}
-		};
-		var fd=new FormData();
-		let file = new File([blob], filename);
-		fd.append("file",file);
-		fd.append("api_key",APIKEY);
-		xhr.open("POST","/Inference/transcribeVoice",true);
-		xhr.send(fd);
-	}else{
-		const xhr=new XMLHttpRequest();
-		xhr.onload=function(e) {
-			if(this.readyState === 4) {
-				let text = "";
-				text = e.target.replaceAll(/\\n/g," ");
-				text = text.replace(/"/g,'');
-				let search = document.getElementById("instructions")
-				if(search){
-					if(search.value !== ""){
-						search = document.getElementById("instructions")
-						search.value = text;
-						addUserInputText(text)
-						evaluatePrompt()
-					}
-					if(search.value === ""){
-						search = document.getElementById("instructions")
-						search.value = text;
-						addUserInputText(text)
-						evaluatePrompt()
-					}
-				}
-				else{
-					search = document.getElementById("instructions")
-					search.value = text;
-					addUserInputText(text)
-					evaluatePrompt()
-				}
+			else{
+				search = document.getElementById("instructions")
+				search.value = text;
+				addUserInputText(text)
+				evaluatePrompt()
 			}
-		};
-		xhr.onerror=function(e) {
-			document.getElementById("soundWaveContainer").style.display = "none";
-			displayAlert("Elf failed to process your request, Please type your prompt instead.")
 		}
-		var fd=new FormData();
-		let file = new File([blob], filename);
-		fd.append("audiofile",file);
-		xhr.open("POST","http://127.0.0.1:8000/Inference/stt",true);
-		xhr.send(fd);
-	}
+	};
+	var fd=new FormData();
+	let file = new File([blob], filename);
+	fd.append("file",file);
+	fd.append("api_key",APIKEY);
+	xhr.open("POST","/Inference/transcribeVoice",true);
+	xhr.send(fd);
 }

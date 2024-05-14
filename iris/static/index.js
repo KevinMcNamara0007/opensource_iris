@@ -275,7 +275,7 @@ function callELF(){
 
       //Get Audio For Response
       try{
-        elfTTS(data.choices[0].message.content);
+        getTextToAudio(data.choices[0].message.content);
       }catch (e) {
         getTextToAudio(data.choices[0].message.content);
       }
